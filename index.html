@@ -162,14 +162,20 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 3.8rem;
-      color: #94a3b8;
+      overflow: hidden;
       border-bottom: 1px solid #f1f5f9;
       transition: 0.2s;
-      background: linear-gradient(145deg, #f8fafc, #f1f5f9);
+      background: #f1f5f9;
     }
-    .product-card:hover .product-img {
-      background: #eef2f6;
+    .product-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: 0.25s ease;
+      display: block;
+    }
+    .product-card:hover .product-img img {
+      transform: scale(1.03);
     }
 
     .product-info {
@@ -375,19 +381,13 @@
       transform: scale(0.94);
     }
 
-    /* gambar mockup dengan emoji / ikon (sebagai pengganti gambar) */
-    .product-img i {
-      filter: drop-shadow(0 4px 4px rgba(0,0,0,0.02));
+    /* fallback jika gambar gagal dimuat */
+    .product-img img {
+      background: #e2e8f0;
     }
-    /* warna latar belakang berbeda untuk tiap card (estetik) */
-    .product-card:nth-child(1) .product-img { background: #e6f0fa; }
-    .product-card:nth-child(2) .product-img { background: #fce9e6; }
-    .product-card:nth-child(3) .product-img { background: #e6f7ed; }
-    .product-card:nth-child(4) .product-img { background: #fef3d7; }
-    .product-card:nth-child(5) .product-img { background: #e8e0f5; }
-    .product-card:nth-child(6) .product-img { background: #fce4e9; }
-    .product-card:nth-child(7) .product-img { background: #ddf0f2; }
-    .product-card:nth-child(8) .product-img { background: #f1e9d8; }
+    .product-img img:not([src]) {
+      opacity: 0;
+    }
   </style>
 </head>
 <body>
@@ -417,11 +417,13 @@
     <div class="category-chip"><i class="fas fa-futbol"></i> Olahraga</div>
   </div>
 
-  <!-- daftar produk (grid) -->
+  <!-- daftar produk (grid) dengan gambar nyata dari unsplash -->
   <div class="product-grid" id="productGrid">
-    <!-- card 1 -->
+    <!-- card 1 - Headphone -->
     <div class="product-card" data-product="1">
-      <div class="product-img"><i class="fas fa-headphones fa-4x"></i></div>
+      <div class="product-img">
+        <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=400&fit=crop&crop=center" alt="Headphone ANC Pro Max" loading="lazy">
+      </div>
       <div class="product-info">
         <div class="product-name">Headphone ANC Pro Max</div>
         <div class="product-price">Rp 1.249.000 <small>Rp 1.799.000</small></div>
@@ -429,9 +431,12 @@
         <div class="product-action"><button class="btn-add"><i class="fas fa-plus"></i> Tambah</button><i class="far fa-heart" style="color:#94a3b8; font-size:1.1rem;"></i></div>
       </div>
     </div>
-    <!-- card 2 -->
+
+    <!-- card 2 - Sepatu Lari -->
     <div class="product-card" data-product="2">
-      <div class="product-img"><i class="fas fa-shoe-prints fa-4x"></i></div>
+      <div class="product-img">
+        <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=400&fit=crop&crop=center" alt="Sepatu Lari Aerolite" loading="lazy">
+      </div>
       <div class="product-info">
         <div class="product-name">Sepatu Lari Aerolite</div>
         <div class="product-price">Rp 899.000 <small>Rp 1.150.000</small></div>
@@ -439,9 +444,12 @@
         <div class="product-action"><button class="btn-add"><i class="fas fa-plus"></i> Tambah</button><i class="far fa-heart" style="color:#94a3b8; font-size:1.1rem;"></i></div>
       </div>
     </div>
-    <!-- card 3 -->
+
+    <!-- card 3 - Laptop -->
     <div class="product-card" data-product="3">
-      <div class="product-img"><i class="fas fa-laptop fa-4x"></i></div>
+      <div class="product-img">
+        <img src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400&h=400&fit=crop&crop=center" alt="Laptop Work 14 i5" loading="lazy">
+      </div>
       <div class="product-info">
         <div class="product-name">Laptop Work 14" i5</div>
         <div class="product-price">Rp 12.999.000 <small>Rp 14.499.000</small></div>
@@ -449,9 +457,12 @@
         <div class="product-action"><button class="btn-add"><i class="fas fa-plus"></i> Tambah</button><i class="far fa-heart" style="color:#94a3b8; font-size:1.1rem;"></i></div>
       </div>
     </div>
-    <!-- card 4 -->
+
+    <!-- card 4 - Jaket Hoodie -->
     <div class="product-card" data-product="4">
-      <div class="product-img"><i class="fas fa-tshirt fa-4x"></i></div>
+      <div class="product-img">
+        <img src="https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=400&h=400&fit=crop&crop=center" alt="Jacket Hoodie Premium" loading="lazy">
+      </div>
       <div class="product-info">
         <div class="product-name">Jacket Hoodie Premium</div>
         <div class="product-price">Rp 459.000 <small>Rp 620.000</small></div>
@@ -459,9 +470,12 @@
         <div class="product-action"><button class="btn-add"><i class="fas fa-plus"></i> Tambah</button><i class="far fa-heart" style="color:#94a3b8; font-size:1.1rem;"></i></div>
       </div>
     </div>
-    <!-- card 5 -->
+
+    <!-- card 5 - Kamera -->
     <div class="product-card" data-product="5">
-      <div class="product-img"><i class="fas fa-camera fa-4x"></i></div>
+      <div class="product-img">
+        <img src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=400&h=400&fit=crop&crop=center" alt="Kamera Mirrorless Z50" loading="lazy">
+      </div>
       <div class="product-info">
         <div class="product-name">Kamera Mirrorless Z50</div>
         <div class="product-price">Rp 8.799.000 <small>Rp 10.250.000</small></div>
@@ -469,9 +483,12 @@
         <div class="product-action"><button class="btn-add"><i class="fas fa-plus"></i> Tambah</button><i class="far fa-heart" style="color:#94a3b8; font-size:1.1rem;"></i></div>
       </div>
     </div>
-    <!-- card 6 -->
+
+    <!-- card 6 - Kursi Ergonomis -->
     <div class="product-card" data-product="6">
-      <div class="product-img"><i class="fas fa-chair fa-4x"></i></div>
+      <div class="product-img">
+        <img src="https://images.unsplash.com/photo-1592078615290-033ee584e267?w=400&h=400&fit=crop&crop=center" alt="Kursi Ergonomis Mesh" loading="lazy">
+      </div>
       <div class="product-info">
         <div class="product-name">Kursi Ergonomis Mesh</div>
         <div class="product-price">Rp 2.199.000 <small>Rp 2.790.000</small></div>
@@ -479,9 +496,12 @@
         <div class="product-action"><button class="btn-add"><i class="fas fa-plus"></i> Tambah</button><i class="far fa-heart" style="color:#94a3b8; font-size:1.1rem;"></i></div>
       </div>
     </div>
-    <!-- card 7 -->
+
+    <!-- card 7 - Smartwatch -->
     <div class="product-card" data-product="7">
-      <div class="product-img"><i class="fas fa-watch fa-4x"></i></div>
+      <div class="product-img">
+        <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=400&fit=crop&crop=center" alt="Smartwatch Fit Pro" loading="lazy">
+      </div>
       <div class="product-info">
         <div class="product-name">Smartwatch Fit Pro</div>
         <div class="product-price">Rp 1.699.000 <small>Rp 2.199.000</small></div>
@@ -489,9 +509,12 @@
         <div class="product-action"><button class="btn-add"><i class="fas fa-plus"></i> Tambah</button><i class="far fa-heart" style="color:#94a3b8; font-size:1.1rem;"></i></div>
       </div>
     </div>
-    <!-- card 8 -->
+
+    <!-- card 8 - Buku Novel -->
     <div class="product-card" data-product="8">
-      <div class="product-img"><i class="fas fa-book-open fa-4x"></i></div>
+      <div class="product-img">
+        <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400&h=400&fit=crop&crop=center" alt="Novel Fiksi Ilmiah Terlaris" loading="lazy">
+      </div>
       <div class="product-info">
         <div class="product-name">Novel Fiksi Ilmiah Terlaris</div>
         <div class="product-price">Rp 129.000 <small>Rp 175.000</small></div>
@@ -613,4 +636,4 @@
   })();
 </script>
 </body>
-</html>
+</html> 
