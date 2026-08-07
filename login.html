@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal - Batik Jayapura</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background: #f4e8d3; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .container { background: #fff; width: 400px; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); overflow: hidden; }
+        h2 { text-align: center; color: #5c3a21; margin-bottom: 20px; }
+        .tabs { display: flex; margin-bottom: 20px; border-bottom: 2px solid #ddd; }
+        .tab { flex: 1; text-align: center; padding: 10px; cursor: pointer; font-weight: bold; color: #888; transition: 0.3s; }
+        .tab.active { color: #5c3a21; border-bottom: 2px solid #5c3a21; }
+        .form-container { display: none; animation: fadeIn 0.4s; }
+        .form-container.active { display: block; }
+        .input-group { margin-bottom: 15px; }
+        .input-group label { display: block; font-size: 14px; margin-bottom: 5px; color: #555; }
+        .input-group input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; outline: none; transition: 0.3s; }
+        .input-group input:focus { border-color: #5c3a21; box-shadow: 0 0 5px rgba(92, 58, 33, 0.3); }
+        button { width: 100%; padding: 12px; background: #5c3a21; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        button:hover { background: #4a2e1a; }
+        button:active { transform: scale(0.96); }
+        .switch-link { text-align: center; margin-top: 15px; font-size: 14px; color: #5c3a21; cursor: pointer; text-decoration: underline; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Batik Jayapura</h2>
+    
+    <div class="tabs">
+        <div class="tab active" onclick="switchRole('user')">User</div>
+        <div class="tab" onclick="switchRole('admin')">Admin (Staff)</div>
+    </div>
+
+    <!-- USER FORMS -->
+    <div id="user-login" class="form-container active">
+        <h3 style="margin-bottom:15px; color:#5c3a21;">Login Pelanggan</h3>
+        <div class="input-group"><label>Nickname / Username</label><input type="text" placeholder="Masukkan Username"></div>
+        <div class="input-group"><label>Password</label><input type="password" placeholder="Masukkan Password"></div>
+        <button onclick="login('user')">Masuk</button>
+        <div class="switch-link" onclick="switchForm('user-register')">Belum punya akun? Daftar di sini</div>
+    </div>
+
+    <div id="user-register" class="form-container">
+        <h3 style="margin-bottom:15px; color:#5c3a21;">Daftar Pelanggan</h3>
+        <div class="input-group"><label>Nama Lengkap</label><input type="text" placeholder="Nama Lengkap"></div>
+        <div class="input-group"><label>Nickname</label><input type="text" placeholder="Nickname"></div>
+        <div class="input-group"><label>Email</label><input type="email" placeholder="Email"></div>
+        <div class="input-group"><label>Password</label><input type="password" placeholder="Buat Password"></div>
+        <button onclick="register('user')">Daftar & Masuk</button>
+        <div class="switch-link" onclick="switchForm('user-login')">Sudah punya akun? Login</div>
+    </div>
+
+    <!-- ADMIN FORMS -->
+    <div id="admin-login" class="form-container">
+        <h3 style="margin-bottom:15px; color:#5c3a21;">Login Admin</h3>
+        <div class="input-group"><label>ID Admin</label><input type="text" placeholder="Masukkan ID Admin"></div>
+        <div class="input-group"><label>Password</label><input type="password" placeholder="Masukkan Password"></div>
+        <button onclick="login('admin')">Masuk Dashboard</button>
+        <div class="switch-link" onclick="switchForm('admin-register')">Buat Akun Staff Baru</div>
+    </div>
+
+    <div id="admin-register" class="form-container">
+        <h3 style="margin-bottom:15px; color:#5c3a21;">Buat Akun Admin</h3>
+        <div class="input-group"><label>Buat ID Admin</label><input type="text" placeholder="ID Admin Baru"></div>
+        <div class="input-group"><label>ID Kartu Fisik (Autentikasi)</label><input type="text" placeholder="Kode Kartu Staff"></div>
+        <div class="input-group"><label>Email Staff</label><input type="email" placeholder="Email"></div>
+        <div class="input-group"><label>Password</label><input type="password" placeholder="Buat Password"></div>
+        <button onclick="register('admin')">Daftar & Masuk</button>
+        <div class="switch-link" onclick="switchForm('admin-login')">Sudah punya akun? Login</div>
+    </div>
+</div>
+
+<script>
+    function switchRole(role) {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        event.target.classList.add('active');
+        if(role === 'user') switchForm('user-login');
+        else switchForm('admin-login');
+    }
+
+    function switchForm(formId) {
+        document.querySelectorAll('.form-container').forEach(f => f.classList.remove('active'));
+        document.getElementById(formId).classList.add('active');
+    }
+
+    function login(role) {
+        alert("Login berhasil sebagai " + role);
+        window.location.href = role === 'admin' ? 'admin.html' : 'pelanggan.html';
+    }
+
+    function register(role) {
+        alert("Pendaftaran berhasil! Mengalihkan ke halaman " + role);
+        window.location.href = role === 'admin' ? 'admin.html' : 'pelanggan.html';
+    }
+</script>
+</body>
+</html>
