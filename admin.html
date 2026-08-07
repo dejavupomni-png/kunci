@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Panel Pengelola Jawa Mega Mendung</title>
+    <style>
+        :root {
+            --bg-main: #0a0505;
+            --bg-card: #140b0b;
+            --bg-input: #241212;
+            --text-main: #f8fafc;
+            --text-muted: #b39a82;
+            --accent-red: #dc2626;
+            --accent-red-bright: #ef4444;
+            --accent-gold: #d97706;
+            --accent-gold-light: #f59e0b;
+            --border: #451a1a;
+            --danger: #ef4444;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --purple: #d946ef;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Georgia', 'Times New Roman', serif, system-ui; }
+        
+        /* Background Motif Batik Mega Mendung Hitam-Merah */
+        body { 
+            background-color: var(--bg-main); 
+            background-image: 
+                radial-gradient(circle at 50% 50%, rgba(220, 38, 38, 0.1) 0%, transparent 80%),
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='60' viewBox='0 0 120 60'%3E%3Cpath d='M0,30 Q15,0 30,30 Q45,60 60,30 Q75,0 90,30 Q105,60 120,30 Q105,50 90,30 Q75,10 60,30 Q45,50 30,30 Q15,10 0,30 Z' fill='none' stroke='%23330a0a' stroke-width='2'/%3E%3Cpath d='M10,30 Q20,10 30,30 Q40,50 50,30 Q60,10 70,30 Q80,50 90,30 Q100,10 110,30' fill='none' stroke='%23991b1b' stroke-width='1.5' opacity='0.3'/%3E%3Cpath d='M20,30 Q25,20 30,30 Q35,40 40,30 Q45,20 50,30 Q55,40 60,30 Q65,20 70,30 Q75,40 80,30 Q85,20 90,30' fill='none' stroke='%23d97706' stroke-width='1' opacity='0.2'/%3E%3C/svg%3E");
+            color: var(--text-main); 
+            min-height: 100vh; 
+        }
+
+        .hidden { display: none !important; }
+
+        #dashboard-page { display: flex; min-height: 100vh; }
+        
+        /* Sidebar Etnik Jawa */
+        aside {
+            width: 240px; background: var(--bg-card); 
+            border-right: 2px solid var(--accent-red);
+            box-shadow: 4px 0 15px rgba(220, 38, 38, 0.2);
+            position: fixed; top: 0; bottom: 0; left: 0; z-index: 10; transition: 0.3s;
+            display: flex; flex-direction: column; justify-content: space-between;
+        }
+        .brand { 
+            padding: 20px 16px; font-weight: bold; color: var(--accent-gold-light); 
+            border-bottom: 2px double var(--accent-red); text-align: center; font-size: 1.1rem;
+            letter-spacing: 1px;
+            text-shadow: 1px 1px 2px #000;
+        }
+        .brand::before, .brand::after { content: " ꧁ "; color: var(--accent-red-bright); }
+        .brand::after { content: " ꧂ "; }
+
+        .menu { list-style: none; padding-top: 10px; }
+        .menu a { 
+            display: block; padding: 12px 18px; color: var(--text-muted); text-decoration: none; font-size: 0.9rem;
+            border-left: 3px solid transparent; transition: all 0.2s;
+        }
+        .menu a.active, .menu a:hover { 
+            background: linear-gradient(90deg, rgba(220, 38, 38, 0.2) 0%, transparent 100%); 
+            color: var(--accent-gold-light); 
+            border-left: 3px solid var(--accent-red-bright);
+        }
+
+        main { margin-left: 240px; flex: 1; padding: 20px; width: calc(100% - 240px); }
+        
+        header { 
+            display: flex; justify-content: space-between; align-items: center; 
+            background: var(--bg-card); padding: 14px 20px; border-radius: 4px; 
+            margin-bottom: 20px; border: 1px solid var(--border);
+            border-bottom: 2px solid var(--accent-gold);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+        }
+        .toggle-btn { display: none; background: none; border: none; color: var(--accent-gold-light); font-size: 1.4rem; cursor: pointer; }
+
+        /* Kartu dengan Sentuhan Ukiran Ornamen Jawa */
+        .card-box { 
+            background: var(--bg-card); 
+            border: 1px solid var(--border); 
+            border-top: 3px solid var(--accent-red);
+            border-radius: 4px; padding: 20px; margin-bottom: 20px; 
+            position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+        }
+        .card-box h3 { 
+            font-size: 1.05rem; color: var(--accent-gold-light); margin-bottom: 14px; 
+            border-bottom: 1px dashed var(--border); padding-bottom: 8px; letter-spacing: 0.5px;
+        }
+
+        .form-group { margin-bottom: 14px; }
+        .form-group label { display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 6px; }
+        .form-group input, .form-group select {
+            width: 100%; padding: 10px 12px; background: var(--bg-input); border: 1px solid var(--border);
+            border-radius: 4px; color: var(--text-main); outline: none; font-size: 0.9rem;
+        }
+        .form-group input:focus, .form-group select:focus {
+            border-color: var(--accent-red-bright);
+            box-shadow: 0 0 5px rgba(239, 68, 68, 0.4);
+        }
+
+        .btn { 
+            width: 100%; background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%); 
+            color: var(--text-main); font-weight: bold; padding: 11px; border: 1px solid var(--accent-red-bright); 
+            border-radius: 4px; cursor: pointer; font-size: 0.9rem; text-shadow: 1px 1px 2px #000;
+            transition: 0.2s;
+        }
+        .btn:hover { background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); }
+        
+        .btn-del { background: var(--danger); color: #fff; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; font-size: 0.75rem; }
+        .btn-reset { background: transparent; border: 1px solid var(--danger); color: var(--danger); padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; font-weight: bold; }
+        .btn-reset:hover { background: var(--danger); color: white; }
+        
+        .btn-logout { 
+            background: rgba(239, 68, 68, 0.15); color: var(--accent-red-bright); 
+            border: 1px solid var(--accent-red); margin: 16px; padding: 10px; border-radius: 4px; 
+            text-align: center; cursor: pointer; font-size: 0.85rem; font-weight: bold; 
+            transition: 0.2s;
+        }
+        .btn-logout:hover { background: var(--accent-red); color: #fff; }
+
+        .stats-grid-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; }
+        .quick-action-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        
+        .quick-action-card { 
+            background: var(--bg-input); border: 1px solid var(--border); border-radius: 4px; 
+            padding: 12px 8px; text-align: center; color: var(--text-main); text-decoration: none; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; 
+            transition: 0.2s;
+        }
+        .quick-action-card:hover {
+            border-color: var(--accent-gold);
+            transform: translateY(-2px);
+        }
+
+        .dashboard-grid-2col { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+
+        .table-container { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.85rem; }
+        th, td { padding: 10px 12px; border-bottom: 1px solid var(--border); }
+        th { background: var(--bg-input); color: var(--accent-gold-light); font-weight: normal; }
+
+        /* Progress Bar Style */
+        .progress-bar-bg { width: 100%; background: var(--bg-input); height: 8px; border-radius: 4px; overflow: hidden; margin-top: 6px; }
+        .progress-bar-fill { height: 100%; background: var(--accent-red-bright); transition: width 0.3s; }
+
+        /* Footer Dashboard */
+        .dashboard-footer { text-align: center; font-size: 0.8rem; color: var(--text-muted); padding: 16px 0; border-top: 1px dashed var(--border); margin-top: 20px; }
+
+        @media (max-width: 768px) {
+            aside { transform: translateX(-100%); }
+            aside.open { transform: translateX(0); }
+            main { margin-left: 0; width: 100%; padding: 12px; }
+            .toggle-btn { display: block; }
+        }
+    </style>
+</head>
+<body>
+
+    <script>
+        if (localStorage.getItem('tp_admin_session') !== 'true') {
+            alert('Akses Ditolak! Anda harus login sebagai Admin.');
+            window.location.href = 'index.html';
+        }
+    </script>
+
+    <div id="dashboard-page">
+        <aside id="sidebar">
+            <div>
+                <div class="brand">Prajurit Admin</div>
+                <ul class="menu">
+                    <li><a href="#dashboard-section" class="nav-link active">🏛️ Pendopo Utama</a></li>
+                    <li><a href="#laporan-section" class="nav-link">📜 Laporan Keuangan</a></li>
+                    <li><a href="#input-section" class="nav-link">✍️ Input Barang</a></li>
+                    <li><a href="#stok-section" class="nav-link">📦 Kelola Stok</a></li>
+                    <li><a href="#pesanan-section" class="nav-link">🛒 Pesanan Masuk</a></li>
+                </ul>
+            </div>
+            <div>
+                <a href="index.html" style="display: block; text-align: center; color: var(--accent-gold-light); text-decoration: none; font-size: 0.8rem; margin-bottom: 8px;">🏬 Ke Toko (Index)</a>
+                <div class="btn-logout" id="btnLogout">Mewarahi (Logout)</div>
+            </div>
+        </aside>
+
+        <main>
+            <header>
+                <button class="toggle-btn" id="menuToggle">☰</button>
+                <h2 id="header-title" style="font-size: 1.1rem; color: var(--accent-gold-light);">Pendopo Utama Admin</h2>
+                <span style="font-size: 0.75rem; color: var(--accent-gold-light); background: rgba(217, 119, 6, 0.15); padding: 4px 10px; border-radius: 4px; border: 1px solid var(--accent-gold);">🔒 Admin Mode</span>
+            </header>
+
+            <!-- SECTION DASHBOARD MENU UTAMA -->
+            <section id="dashboard-section" class="content-section">
+                <div class="card-box">
+                    <h3>🏛️ Panel Pendopo Pengelola</h3>
+                    <p style="color: var(--text-muted); margin-bottom: 16px; font-size: 0.85rem;">
+                        Ringkasan operasional toko, analisis pembukuan, sebaran inventaris barang, serta log aktivitas sistem secara real-time.
+                    </p>
+                    
+                    <!-- 1. STATISTIK KUNCI -->
+                    <div class="stats-grid-2col" style="margin-bottom: 16px;">
+                        <div style="background: var(--bg-main); padding: 12px; border-radius: 4px; border-left: 3px solid var(--accent-gold-light);">
+                            <span style="font-size: 0.75rem; color: var(--text-muted);">Total Jenis Barang</span>
+                            <div id="dashTotalBarang" style="font-weight: bold; color: var(--accent-gold-light); font-size: 1.3rem; margin-top: 2px;">0</div>
+                        </div>
+                        <div style="background: var(--bg-main); padding: 12px; border-radius: 4px; border-left: 3px solid var(--accent-red-bright);">
+                            <span style="font-size: 0.75rem; color: var(--text-muted);">Total Pesanan Web</span>
+                            <div id="dashTotalPesanan" style="font-weight: bold; color: var(--accent-red-bright); font-size: 1.3rem; margin-top: 2px;">0</div>
+                        </div>
+                    </div>
+
+                    <!-- 2. AKSES FITUR CEPAT -->
+                    <h4 style="color: var(--accent-gold-light); margin-bottom: 10px; font-size: 0.8rem;">Akses Fitur Cepat</h4>
+                    <div class="quick-action-grid" style="margin-bottom: 20px;">
+                        <a href="#laporan-section" class="nav-link quick-action-card">
+                            <div style="font-size: 1.3rem;">📜</div>
+                            <div style="font-size: 0.8rem;">Laporan Keuangan</div>
+                        </a>
+                        <a href="#input-section" class="nav-link quick-action-card">
+                            <div style="font-size: 1.3rem;">✍️</div>
+                            <div style="font-size: 0.8rem;">Input Barang</div>
+                        </a>
+                        <a href="#stok-section" class="nav-link quick-action-card">
+                            <div style="font-size: 1.3rem;">📦</div>
+                            <div style="font-size: 0.8rem;">Kelola Stok</div>
+                        </a>
+                        <a href="#pesanan-section" class="nav-link quick-action-card">
+                            <div style="font-size: 1.3rem;">🛒</div>
+                            <div style="font-size: 0.8rem;">Pesanan Masuk</div>
+                        </a>
+                    </div>
+
+                    <!-- 3. GRAFIK-GRAFIK ANALISA UTAMA -->
+                    <div class="dashboard-grid-2col" style="margin-bottom: 20px;">
+                        <div style="background: var(--bg-main); padding: 14px; border-radius: 4px; border: 1px solid var(--border);">
+                            <h4 style="font-size: 0.85rem; color: var(--accent-gold-light); margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;">
+                                <span>📊 Ringkasan Keuangan</span>
+                                <span style="font-size: 0.7rem; color: var(--text-muted);">Batang</span>
+                            </h4>
+                            <canvas id="chartKeuangan" height="150" style="width: 100%;"></canvas>
+                        </div>
+
+                        <div style="background: var(--bg-main); padding: 14px; border-radius: 4px; border: 1px solid var(--border);">
+                            <h4 style="font-size: 0.85rem; color: var(--accent-gold-light); margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;">
+                                <span>📦 Distribusi Stok per Kategori</span>
+                                <span style="font-size: 0.7rem; color: var(--text-muted);">Lingkaran</span>
+                            </h4>
+                            <canvas id="chartStok" height="150" style="width: 100%;"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- 4. TABEL STOK MENIPIS & PESANAN TERBARU -->
+                    <div class="dashboard-grid-2col" style="margin-bottom: 20px;">
+                        <div style="background: var(--bg-main); padding: 14px; border-radius: 4px; border: 1px solid var(--border);">
+                            <h4 style="font-size: 0.85rem; color: var(--warning); margin-bottom: 8px;">⚠️ Peringatan Stok Menipis (≤ 5)</h4>
+                            <div class="table-container">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Produk</th>
+                                            <th>Stok</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tabelStokMenipis"></tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div style="background: var(--bg-main); padding: 14px; border-radius: 4px; border: 1px solid var(--border);">
+                            <h4 style="font-size: 0.85rem; color: var(--success); margin-bottom: 8px;">🛒 Pesanan Masuk Terbaru</h4>
+                            <div class="table-container">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Nama</th>
+                                            <th>Total</th>
+                                            <th>Metode</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tabelPesananRingkas"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 5. TOP 5 PRODUK TERLARIS & LOG AKTIVITAS SISTEM -->
+                    <div class="dashboard-grid-2col" style="margin-bottom: 20px;">
+                        <div style="background: var(--bg-main); padding: 14px; border-radius: 4px; border: 1px solid var(--border);">
+                            <h4 style="font-size: 0.85rem; color: var(--purple); margin-bottom: 8px;">🔥 Produk Paling Diminati (Terlaris)</h4>
+                            <div class="table-container">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Produk</th>
+                                            <th>Kategori</th>
+                                            <th>Terjual</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tabelTopProduk"></tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div style="background: var(--bg-main); padding: 14px; border-radius: 4px; border: 1px solid var(--border);">
+                            <h4 style="font-size: 0.85rem; color: var(--accent-gold-light); margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+                                <span>📜 Catatan Serat (Log Aktivitas)</span>
+                                <button onclick="clearLogs()" style="background:none; border:none; color:var(--danger); cursor:pointer; font-size:0.7rem;">Bersihkan Log</button>
+                            </h4>
+                            <div class="table-container" style="max-height: 160px; overflow-y: auto;">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Waktu</th>
+                                            <th>Aktivitas</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tabelLogAktivitas"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 6. WIDGET STATUS STORAGE & TOTAL NILAI INVENTARIS -->
+                    <div class="dashboard-grid-2col" style="margin-bottom: 20px;">
+                        <div style="background: var(--bg-main); padding: 12px; border-radius: 4px; border: 1px solid var(--border);">
+                            <span style="font-size: 0.78rem; color: var(--text-muted);">💾 Memori Penyimpanan Terpakai (LocalStorage)</span>
+                            <div id="storagePercentText" style="font-weight: bold; color: var(--accent-gold-light); font-size: 0.9rem; margin-top: 4px;">0 KB / 5 MB</div>
+                            <div class="progress-bar-bg">
+                                <div id="storageBarFill" class="progress-bar-fill" style="width: 0%;"></div>
+                            </div>
+                        </div>
+                        <div style="background: var(--bg-main); padding: 12px; border-radius: 4px; border: 1px solid var(--border);">
+                            <span style="font-size: 0.78rem; color: var(--text-muted);">💎 Estimasi Nilai Kekayaan Gudang</span>
+                            <div id="totalNilaiAset" style="font-weight: bold; color: var(--accent-gold-light); font-size: 1.1rem; margin-top: 4px;">Rp 0</div>
+                        </div>
+                    </div>
+
+                    <!-- 7. CATATAN PENGELOLAAN & TATA KRAMA -->
+                    <div style="background: var(--bg-main); padding: 12px; border-radius: 4px; border: 1px solid var(--border);">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
+                            <span style="font-size: 0.8rem; font-weight: bold; color: var(--accent-gold-light);">💡 Pitutur Pengelolaan</span>
+                            <span style="font-size: 0.7rem; color: var(--success);">TATA TENTREM</span>
+                        </div>
+                        <p id="quoteText" style="font-size: 0.78rem; color: var(--text-muted); line-height: 1.4; font-style: italic;">
+                            "Urip iku urup. Jaga pasokan barang agar pelayanan marang pelanggan tansah lancar lan berkah."
+                        </p>
+                    </div>
+
+                    <!-- FOOTER DASHBOARD -->
+                    <div class="dashboard-footer">
+                        Admin Control Panel Mega Mendung v1.5.0 • Rahayu • Digdaya Studio
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- SECTION LAPORAN KEUANGAN MANUAL -->
+            <section id="laporan-section" class="content-section hidden">
+                <div class="card-box">
+                    <h3>✍️ Input Serat Pembukuan (Penghasilan & Pengeluaran)</h3>
+                    <form id="formKeuangan" onsubmit="return false;">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Pilih Tanggal</label>
+                                <input type="date" id="lapTanggal" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Pendapatan (Rp)</label>
+                                <input type="number" id="lapPendapatan" placeholder="0" value="0">
+                            </div>
+                            <div class="form-group">
+                                <label>Pengeluaran (Rp)</label>
+                                <input type="number" id="lapPengeluaran" placeholder="0" value="0">
+                            </div>
+                            <div class="form-group">
+                                <label>Keterangan / Catatan (Opsional)</label>
+                                <input type="text" id="lapKet" placeholder="Contoh: Belanja Stok / Hasil Jual">
+                            </div>
+                        </div>
+                        <button type="button" id="btnSimpanKeuangan" class="btn" style="margin-top: 4px;">+ Catat Pembukuan</button>
+                    </form>
+                </div>
+
+                <div class="card-box">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid var(--border); padding-bottom: 6px;">
+                        <h3 style="border: none; margin: 0; padding: 0;">📜 Rekap Keuangan Toko</h3>
+                        <button class="btn-reset" id="btnResetLaporan">🗑️ Reset Semua Laporan</button>
+                    </div>
+
+                    <div class="form-grid" style="margin-bottom: 16px;">
+                        <div style="background: var(--bg-main); padding: 12px; border-radius: 4px; border-left: 3px solid var(--success);">
+                            <span style="font-size: 0.8rem; color: var(--text-muted);">Total Pendapatan</span>
+                            <div id="rekapPendapatan" style="font-weight: bold; color: var(--success); font-size: 1.1rem; margin-top: 4px;">Rp 0</div>
+                        </div>
+                        <div style="background: var(--bg-main); padding: 12px; border-radius: 4px; border-left: 3px solid var(--danger);">
+                            <span style="font-size: 0.8rem; color: var(--text-muted);">Total Pengeluaran</span>
+                            <div id="rekapPengeluaran" style="font-weight: bold; color: var(--danger); font-size: 1.1rem; margin-top: 4px;">Rp 0</div>
+                        </div>
+                        <div style="background: var(--bg-main); padding: 12px; border-radius: 4px; border-left: 3px solid var(--accent-gold-light);">
+                            <span style="font-size: 0.8rem; color: var(--text-muted);">Laba Bersih</span>
+                            <div id="rekapLaba" style="font-weight: bold; color: var(--accent-gold-light); font-size: 1.1rem; margin-top: 4px;">Rp 0</div>
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Tanggal</th>
+                                    <th>Keterangan</th>
+                                    <th>Pendapatan</th>
+                                    <th>Pengeluaran</th>
+                                    <th>Laba / Rugi</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabelKeuangan"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION INPUT BARANG -->
+            <section id="input-section" class="content-section hidden">
+                <div class="card-box">
+                    <h3>Tambah Produk Baru</h3>
+                    <form id="formInputBarang" onsubmit="return false;">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Kode Barang</label>
+                                <input type="text" id="kodeBarang" placeholder="KB-01">
+                            </div>
+                            <div class="form-group">
+                                <label>Nama Produk</label>
+                                <input type="text" id="namaBarang" placeholder="Keychron K2">
+                            </div>
+                            <div class="form-group">
+                                <label>Kategori</label>
+                                <select id="kategoriBarang">
+                                    <optgroup label="Aksesoris & Peripherals">
+                                        <option value="Aksesoris Keyboard">Aksesoris Keyboard</option>
+                                        <option value="Aksesoris Mouse">Aksesoris Mouse</option>
+                                        <option value="Audio">Audio</option>
+                                    </optgroup>
+                                    <optgroup label="Sparepart / Hardware">
+                                        <option value="GPU">GPU</option>
+                                        <option value="CPU">CPU</option>
+                                        <option value="RAM">RAM</option>
+                                    </optgroup>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Jumlah Stok</label>
+                                <input type="number" id="stokBarang" placeholder="0">
+                            </div>
+                            <div class="form-group">
+                                <label>Harga Jual (Rp)</label>
+                                <input type="number" id="hargaBarang" placeholder="0">
+                            </div>
+                            <div class="form-group">
+                                <label>URL Gambar (Opsional)</label>
+                                <input type="text" id="gambarBarang" placeholder="https://...">
+                            </div>
+                        </div>
+                        <button type="button" id="btnSimpanBarang" class="btn" style="margin-top: 10px;">Simpan Produk</button>
+                    </form>
+                </div>
+            </section>
+
+            <!-- SECTION KELOLA STOK -->
+            <section id="stok-section" class="content-section hidden">
+                <div class="card-box">
+                    <h3>Daftar Inventaris Stok</h3>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Gambar</th>
+                                    <th>Kode</th>
+                                    <th>Nama Produk</th>
+                                    <th>Kategori</th>
+                                    <th>Stok</th>
+                                    <th>Harga</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabelStok"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION PESANAN MASUK -->
+            <section id="pesanan-section" class="content-section hidden">
+                <div class="card-box">
+                    <h3>Daftar Pesanan Masuk (Online Web)</h3>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID Trx</th>
+                                    <th>Tanggal</th>
+                                    <th>Nama Pembeli</th>
+                                    <th>Produk Dipesan</th>
+                                    <th>Total Bayar</th>
+                                    <th>Metode</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabelPesanan"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        let dataStok = JSON.parse(localStorage.getItem('tp_stok')) || [];
+        let dataPesanan = JSON.parse(localStorage.getItem('tp_pesanan')) || [];
+        let dataKeuangan = JSON.parse(localStorage.getItem('tp_keuangan')) || [];
+        let dataLogs = JSON.parse(localStorage.getItem('tp_logs')) || [];
+
+        const sidebar = document.getElementById('sidebar');
+        document.getElementById('lapTanggal').valueAsDate = new Date();
+
+        const titleMap = {
+            'dashboard-section': 'Pendopo Utama Admin',
+            'laporan-section': 'Laporan Keuangan Toko',
+            'input-section': 'Input Barang Baru',
+            'stok-section': 'Kelola Stok Barang',
+            'pesanan-section': 'Daftar Pesanan Masuk'
+        };
+
+        function addLog(activity) {
+            const time = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+            dataLogs.unshift({ time, activity });
+            if(dataLogs.length > 15) dataLogs.pop();
+            localStorage.setItem('tp_logs', JSON.stringify(dataLogs));
+        }
+
+        function clearLogs() {
+            if(confirm('Bersihkan riwayat serat log aktivitas?')) {
+                dataLogs = [];
+                localStorage.removeItem('tp_logs');
+                renderLogs();
+            }
+        }
+
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.getAttribute('href').replace('#', '');
+                
+                document.querySelectorAll('.content-section').forEach(s => s.classList.add('hidden'));
+                document.getElementById(targetId).classList.remove('hidden');
+                
+                document.getElementById('header-title').textContent = titleMap[targetId];
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                document.querySelectorAll(`.nav-link[href="#${targetId}"]`).forEach(l => l.classList.add('active'));
+                
+                sidebar.classList.remove('open');
+                if(targetId === 'dashboard-section') updateDashboardElements();
+                if(targetId === 'laporan-section') renderKeuangan();
+            });
+        });
+
+        document.getElementById('menuToggle').addEventListener('click', () => sidebar.classList.toggle('open'));
+
+        document.getElementById('btnLogout').addEventListener('click', () => {
+            localStorage.removeItem('tp_admin_session');
+            window.location.href = 'index.html';
+        });
+
+        function updateDashboardElements() {
+            document.getElementById('dashTotalBarang').textContent = dataStok.length;
+            document.getElementById('dashTotalPesanan').textContent = dataPesanan.length;
+
+            renderCharts();
+            renderRingkasanTables();
+            renderTopProduk();
+            renderLogs();
+            calcStorageAndAssets();
+        }
+
+        function renderCharts() {
+            // Chart Keuangan bertema Jawa (Emas, Merah, Kuning)
+            const cKeu = document.getElementById('chartKeuangan');
+            if (cKeu) {
+                const ctx = cKeu.getContext('2d');
+                ctx.clearRect(0, 0, cKeu.width, cKeu.height);
+
+                let totalMasuk = dataKeuangan.reduce((a, b) => a + (b.pendapatan || 0), 0);
+                let totalKeluar = dataKeuangan.reduce((a, b) => a + (b.pengeluaran || 0), 0);
+                let laba = totalMasuk - totalKeluar;
+
+                const maxVal = Math.max(totalMasuk, totalKeluar, Math.abs(laba), 100000);
+
+                const drawBar = (x, val, color, label) => {
+                    const barHeight = Math.max((Math.abs(val) / maxVal) * 90, 5);
+                    const y = 120 - barHeight;
+
+                    ctx.fillStyle = color;
+                    ctx.fillRect(x, y, 40, barHeight);
+
+                    ctx.fillStyle = '#b39a82';
+                    ctx.font = '10px Georgia';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(label, x + 20, 140);
+                };
+
+                drawBar(30, totalMasuk, '#10b981', 'Masuk');
+                drawBar(110, totalKeluar, '#ef4444', 'Keluar');
+                drawBar(190, laba, laba >= 0 ? '#f59e0b' : '#dc2626', 'Laba');
+            }
+
+            // Pie Chart Stok bertema Etnik
+            const cStok = document.getElementById('chartStok');
+            if (cStok) {
+                const ctx = cStok.getContext('2d');
+                ctx.clearRect(0, 0, cStok.width, cStok.height);
+
+                const katCount = {};
+                let totalStok = 0;
+                dataStok.forEach(item => {
+                    const qty = parseInt(item.stok) || 0;
+                    katCount[item.kategori] = (katCount[item.kategori] || 0) + qty;
+                    totalStok += qty;
+                });
+
+                const categories = Object.keys(katCount);
+                if (categories.length === 0 || totalStok === 0) {
+                    ctx.fillStyle = '#b39a82';
+                    ctx.font = '12px Georgia';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('Dereng wonten data stok', cStok.width / 2, cStok.height / 2);
+                    return;
+                }
+
+                const colors = ['#dc2626', '#d97706', '#f59e0b', '#991b1b', '#d946ef', '#10b981'];
+                let startAngle = 0;
+
+                categories.forEach((cat, index) => {
+                    const sliceAngle = (katCount[cat] / totalStok) * 2 * Math.PI;
+                    ctx.beginPath();
+                    ctx.moveTo(70, 75);
+                    ctx.arc(70, 75, 55, startAngle, startAngle + sliceAngle);
+                    ctx.closePath();
+                    ctx.fillStyle = colors[index % colors.length];
+                    ctx.fill();
+                    startAngle += sliceAngle;
+
+                    ctx.fillRect(145, 20 + (index * 18), 10, 10);
+                    ctx.fillStyle = '#f8fafc';
+                    ctx.font = '10px Georgia';
+                    ctx.textAlign = 'left';
+                    ctx.fillText(`${cat} (${katCount[cat]})`, 160, 28 + (index * 18));
+                });
+            }
+        }
+
+        function renderRingkasanTables() {
+            const tbodyStok = document.getElementById('tabelStokMenipis');
+            const lowStock = dataStok.filter(item => parseInt(item.stok) <= 5);
+            tbodyStok.innerHTML = lowStock.length ? lowStock.map(item => `
+                <tr>
+                    <td>${item.nama}</td>
+                    <td><strong style="color:var(--danger)">${item.stok}</strong></td>
+                    <td><span style="color:var(--danger); font-size:0.75rem;">Stok Menipis</span></td>
+                </tr>
+            `).join('') : '<tr><td colspan="3" style="text-align:center; color:var(--text-muted)">Stok aman terendah.</td></tr>';
+
+            const tbodyPesanan = document.getElementById('tabelPesananRingkas');
+            const recentOrders = dataPesanan.slice(0, 5);
+            tbodyPesanan.innerHTML = recentOrders.length ? recentOrders.map(p => `
+                <tr>
+                    <td>${p.namaPembeli || 'Guest'}</td>
+                    <td>Rp ${(p.totalBayar || 0).toLocaleString('id-ID')}</td>
+                    <td>${p.metode || 'Transfer'}</td>
+                </tr>
+            `).join('') : '<tr><td colspan="3" style="text-align:center; color:var(--text-muted)">Belum ada pesanan.</td></tr>';
+        }
+
+        function renderTopProduk() {
+            const tbody = document.getElementById('tabelTopProduk');
+            const sorted = [...dataStok].sort((a, b) => (b.terjual || 0) - (a.terjual || 0)).slice(0, 5);
+            tbody.innerHTML = sorted.length ? sorted.map(item => `
+                <tr>
+                    <td>${item.nama}</td>
+                    <td>${item.kategori}</td>
+                    <td><strong style="color:var(--accent-gold-light)">${item.terjual || 0}</strong> unit</td>
+                </tr>
+            `).join('') : '<tr><td colspan="3" style="text-align:center; color:var(--text-muted)">Belum ada penjualan.</td></tr>';
+        }
+
+        function renderLogs() {
+            const tbody = document.getElementById('tabelLogAktivitas');
+            tbody.innerHTML = dataLogs.length ? dataLogs.map(log => `
+                <tr>
+                    <td style="color:var(--text-muted); width:70px;">${log.time}</td>
+                    <td>${log.activity}</td>
+                </tr>
+            `).join('') : '<tr><td colspan="2" style="text-align:center; color:var(--text-muted)">Catatan serat kosong.</td></tr>';
+        }
+
+        function calcStorageAndAssets() {
+            const totalBytes = new Blob([JSON.stringify(localStorage)]).size;
+            const sizeKB = (totalBytes / 1024).toFixed(1);
+            const percent = Math.min(((totalBytes / (5 * 1024 * 1024)) * 100), 100).toFixed(1);
+
+            document.getElementById('storagePercentText').textContent = `${sizeKB} KB / 5 MB (${percent}%)`;
+            document.getElementById('storageBarFill').style.width = `${percent}%`;
+
+            const totalAsset = dataStok.reduce((sum, item) => sum + ((parseInt(item.stok) || 0) * (parseInt(item.harga) || 0)), 0);
+            document.getElementById('totalNilaiAset').textContent = `Rp ${totalAsset.toLocaleString('id-ID')}`;
+        }
+
+        document.getElementById('btnSimpanBarang').addEventListener('click', () => {
+            const kode = document.getElementById('kodeBarang').value.trim();
+            const nama = document.getElementById('namaBarang').value.trim();
+            const kategori = document.getElementById('kategoriBarang').value;
+            const stok = parseInt(document.getElementById('stokBarang').value) || 0;
+            const harga = parseInt(document.getElementById('hargaBarang').value) || 0;
+            const gambar = document.getElementById('gambarBarang').value.trim();
+
+            if (!kode || !nama) {
+                alert('Kode lan Nama Produk wajib diisi!');
+                return;
+            }
+
+            dataStok.push({ kode, nama, kategori, stok, harga, gambar, terjual: 0 });
+            localStorage.setItem('tp_stok', JSON.stringify(dataStok));
+
+            addLog(`Menambah produk baru: ${nama} (${kode})`);
+            alert('Produk kasil kasimpan!');
+            document.getElementById('formInputBarang').reset();
+            renderStokTable();
+        });
+
+        function renderStokTable() {
+            const tbody = document.getElementById('tabelStok');
+            tbody.innerHTML = dataStok.length ? dataStok.map((item, index) => `
+                <tr>
+                    <td><img src="${item.gambar || 'https://via.placeholder.com/40'}" style="width:36px; height:36px; object-fit:cover; border-radius:4px;"></td>
+                    <td>${item.kode}</td>
+                    <td>${item.nama}</td>
+                    <td>${item.kategori}</td>
+                    <td>${item.stok}</td>
+                    <td>Rp ${parseInt(item.harga).toLocaleString('id-ID')}</td>
+                    <td><button class="btn-del" onclick="hapusStok(${index})">Hapus</button></td>
+                </tr>
+            `).join('') : '<tr><td colspan="7" style="text-align:center; color:var(--text-muted)">Gudang stok kosong.</td></tr>';
+        }
+
+        function hapusStok(index) {
+            if (confirm(`Hapus produk "${dataStok[index].nama}"?`)) {
+                addLog(`Menghapus produk: ${dataStok[index].nama}`);
+                dataStok.splice(index, 1);
+                localStorage.setItem('tp_stok', JSON.stringify(dataStok));
+                renderStokTable();
+            }
+        }
+
+        document.getElementById('btnSimpanKeuangan').addEventListener('click', () => {
+            const tanggal = document.getElementById('lapTanggal').value;
+            const pendapatan = parseInt(document.getElementById('lapPendapatan').value) || 0;
+            const pengeluaran = parseInt(document.getElementById('lapPengeluaran').value) || 0;
+            const ket = document.getElementById('lapKet').value.trim() || 'Pembukuan Manual';
+
+            if (!tanggal) {
+                alert('Pilih tanggal laporan!');
+                return;
+            }
+
+            dataKeuangan.push({ tanggal, pendapatan, pengeluaran, ket });
+            localStorage.setItem('tp_keuangan', JSON.stringify(dataKeuangan));
+
+            addLog(`Mencatat keuangan: +Rp${pendapatan} / -Rp${pengeluaran}`);
+            alert('Pembukuan kasil kasimpan!');
+            document.getElementById('formKeuangan').reset();
+            document.getElementById('lapTanggal').valueAsDate = new Date();
+            renderKeuangan();
+        });
+
+        function renderKeuangan() {
+            let totalMasuk = 0, totalKeluar = 0;
+            const tbody = document.getElementById('tabelKeuangan');
+
+            tbody.innerHTML = dataKeuangan.length ? dataKeuangan.map((item, i) => {
+                totalMasuk += item.pendapatan;
+                totalKeluar += item.pengeluaran;
+                const labaRugi = item.pendapatan - item.pengeluaran;
+
+                return `
+                    <tr>
+                        <td>${item.tanggal}</td>
+                        <td>${item.ket}</td>
+                        <td style="color:var(--success)">Rp ${item.pendapatan.toLocaleString('id-ID')}</td>
+                        <td style="color:var(--danger)">Rp ${item.pengeluaran.toLocaleString('id-ID')}</td>
+                        <td style="color:${labaRugi >= 0 ? 'var(--accent-gold-light)' : 'var(--warning)'}">Rp ${labaRugi.toLocaleString('id-ID')}</td>
+                        <td><button class="btn-del" onclick="hapusKeuangan(${i})">Hapus</button></td>
+                    </tr>
+                `;
+            }).join('') : '<tr><td colspan="6" style="text-align:center; color:var(--text-muted)">Dereng wonten catatan keuangan.</td></tr>';
+
+            document.getElementById('rekapPendapatan').textContent = `Rp ${totalMasuk.toLocaleString('id-ID')}`;
+            document.getElementById('rekapPengeluaran').textContent = `Rp ${totalKeluar.toLocaleString('id-ID')}`;
+            const totalLaba = totalMasuk - totalKeluar;
+            document.getElementById('rekapLaba').textContent = `Rp ${totalLaba.toLocaleString('id-ID')}`;
+            document.getElementById('rekapLaba').style.color = totalLaba >= 0 ? 'var(--accent-gold-light)' : 'var(--danger)';
+        }
+
+        function hapusKeuangan(i) {
+            if (confirm('Hapus entri pembukuan ini?')) {
+                dataKeuangan.splice(i, 1);
+                localStorage.setItem('tp_keuangan', JSON.stringify(dataKeuangan));
+                renderKeuangan();
+            }
+        }
+
+        document.getElementById('btnResetLaporan').addEventListener('click', () => {
+            if (confirm('Menghapus SELURUH laporan keuangan?')) {
+                dataKeuangan = [];
+                localStorage.removeItem('tp_keuangan');
+                addLog('Mereset seluruh data laporan keuangan');
+                renderKeuangan();
+            }
+        });
+
+        function renderPesanan() {
+            const tbody = document.getElementById('tabelPesanan');
+            tbody.innerHTML = dataPesanan.length ? dataPesanan.map(p => `
+                <tr>
+                    <td>${p.id || '-'}</td>
+                    <td>${p.tanggal || '-'}</td>
+                    <td>${p.namaPembeli || 'Guest'}</td>
+                    <td>${p.items ? p.items.join(', ') : '-'}</td>
+                    <td>Rp ${(p.totalBayar || 0).toLocaleString('id-ID')}</td>
+                    <td><span style="color:var(--accent-gold-light); font-weight:bold;">${p.metode || 'Transfer'}</span></td>
+                </tr>
+            `).join('') : '<tr><td colspan="6" style="text-align:center; color:var(--text-muted)">Dereng wonten pesanan lumebu.</td></tr>';
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            if (dataLogs.length === 0) addLog('Pendopo admin diaktifkan');
+            updateDashboardElements();
+            renderStokTable();
+            renderPesanan();
+        });
+    </script>
+</body>
+</html>
