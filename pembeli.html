@@ -142,7 +142,6 @@
 </head>
 <body>
 
-    <!-- HALAMAN LOGIN -->
     <div class="login-wrapper" id="loginSection">
         <div class="login-card">
             <h2>꧁ Masuk Toko Batik ꧂</h2>
@@ -157,11 +156,9 @@
         </div>
     </div>
 
-    <!-- HALAMAN UTAMA TOKO -->
     <div id="shopSection" class="hidden">
         <header>
             <a href="#" class="logo">꧁ ⚡ Batik Megamendung ꧂</a>
-            
             <div class="user-nav">
                 <span class="user-tag" id="userDisplay">👤 Guest</span>
                 <button class="cart-btn" id="openCartBtn">
@@ -190,7 +187,6 @@
         </div>
     </div>
 
-    <!-- MODAL DETAIL PRODUK -->
     <div class="modal hidden" id="productModal">
         <div class="modal-card">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid var(--border); padding-bottom: 8px;">
@@ -222,7 +218,6 @@
         </div>
     </div>
 
-    <!-- MODAL KERANJANG & CHECKOUT -->
     <div class="modal hidden" id="cartModal">
         <div class="modal-card">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid var(--border); padding-bottom: 8px;">
@@ -260,7 +255,7 @@
     </div>
 
     <script>
-        // Data Produk menggunakan URL Wikimedia Commons / foto asli orang Indonesia berkebaya/berbatik
+        // Menggunakan Gambar Foto Asli Batik stabil via Unsplash agar lebih mudah diload
         const produkBatikDefault = [
             { 
                 id: 1, 
@@ -268,7 +263,7 @@
                 kategori: "Batik Pesisir", 
                 harga: 450000, 
                 stok: 15, 
-                gambar: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Indonesian_President_Joko_Widodo_wearing_batik.jpg/640px-Indonesian_President_Joko_Widodo_wearing_batik.jpg" 
+                gambar: "https://images.unsplash.com/photo-1605335193910-c0812e95a9d8?w=500&auto=format&fit=crop" 
             },
             { 
                 id: 2, 
@@ -276,7 +271,7 @@
                 kategori: "Batik Keraton", 
                 harga: 380000, 
                 stok: 20, 
-                gambar: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Indonesian_traditional_clothing_-_Batik_pattern.jpg/640px-Indonesian_traditional_clothing_-_Batik_pattern.jpg" 
+                gambar: "https://images.unsplash.com/photo-1605335133649-14a022b7aee2?w=500&auto=format&fit=crop" 
             },
             { 
                 id: 3, 
@@ -284,7 +279,7 @@
                 kategori: "Batik Tulis", 
                 harga: 550000, 
                 stok: 10, 
-                gambar: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Batik_patterns.jpg/640px-Batik_patterns.jpg" 
+                gambar: "https://images.unsplash.com/photo-1596484552834-6a58f850e0a1?w=500&auto=format&fit=crop" 
             },
             { 
                 id: 4, 
@@ -292,7 +287,7 @@
                 kategori: "Batik Cap", 
                 harga: 185000, 
                 stok: 45, 
-                gambar: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Batik_Solo.jpg/640px-Batik_Solo.jpg" 
+                gambar: "https://images.unsplash.com/photo-1605335161421-4d4361eb2bb5?w=500&auto=format&fit=crop" 
             },
             { 
                 id: 5, 
@@ -300,7 +295,7 @@
                 kategori: "Batik Tulis", 
                 harga: 720000, 
                 stok: 8, 
-                gambar: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Batik_Madura.jpg/640px-Batik_Madura.jpg" 
+                gambar: "https://images.unsplash.com/photo-1611077543940-5e36f7847bd6?w=500&auto=format&fit=crop" 
             },
             { 
                 id: 6, 
@@ -308,13 +303,13 @@
                 kategori: "Busana", 
                 harga: 275000, 
                 stok: 25, 
-                gambar: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/President_Joko_Widodo_in_2019.jpg/640px-President_Joko_Widodo_in_2019.jpg" 
+                gambar: "https://images.unsplash.com/photo-1611116260275-3004812fcc6a?w=500&auto=format&fit=crop" 
             }
         ];
 
-        // Reset data localstorage jika struktur atau gambar lama masih tersimpan
-        if (!localStorage.getItem('batik_stok_v2')) {
-            localStorage.setItem('batik_stok_v2', JSON.stringify(produkBatikDefault));
+        // MENGUBAH NAMA KEY STORAGE AGAR BROWSER MERESET DATA GAMBAR YANG LAMA (V3)
+        if (!localStorage.getItem('batik_stok_v3')) {
+            localStorage.setItem('batik_stok_v3', JSON.stringify(produkBatikDefault));
         }
 
         let cart = [];
@@ -357,7 +352,7 @@
         const productModal = document.getElementById('productModal');
 
         function renderProducts(filter = 'ALL') {
-            let dataStok = JSON.parse(localStorage.getItem('batik_stok_v2')) || produkBatikDefault;
+            let dataStok = JSON.parse(localStorage.getItem('batik_stok_v3')) || produkBatikDefault;
             let filteredData = dataStok;
             if (filter !== 'ALL') {
                 filteredData = dataStok.filter(p => p.kategori.toLowerCase().includes(filter.toLowerCase()));
@@ -373,7 +368,7 @@
                     <div>
                         <img src="${p.gambar}" class="product-img" alt="${p.nama}">
                         <div class="product-title">${p.nama}</div>
-                        <div class="product-cat">${p.kategori} | Stok: ${p.stok}</div>
+                        <div class="product-cat">${p.kategori} \vert{} Stok:${p.stok}</div>
                     </div>
                     <div>
                         <div class="product-price">Rp ${p.harga.toLocaleString('id-ID')}</div>
@@ -390,7 +385,7 @@
         }
 
         function openProductModal(id) {
-            let dataStok = JSON.parse(localStorage.getItem('batik_stok_v2')) || produkBatikDefault;
+            let dataStok = JSON.parse(localStorage.getItem('batik_stok_v3')) || produkBatikDefault;
             selectedProduct = dataStok.find(p => p.id === id);
             if (!selectedProduct || selectedProduct.stok <= 0) {
                 alert('Ngapura, stok kain taksih selak kosong!');
@@ -440,7 +435,7 @@
         });
 
         function updateCartItemQty(id, change) {
-            let dataStok = JSON.parse(localStorage.getItem('batik_stok_v2')) || produkBatikDefault;
+            let dataStok = JSON.parse(localStorage.getItem('batik_stok_v3')) || produkBatikDefault;
             const item = cart.find(c => c.id === id);
             if (!item) return;
 
@@ -482,52 +477,4 @@
                                 <span style="color:var(--text-muted); font-size: 0.75rem;">Rp ${item.harga.toLocaleString('id-ID')} / lembar</span>
                             </div>
                             <div style="display: flex; align-items: center; gap: 8px;">
-                                <button class="btn-qty" style="width:24px; height:24px; font-size:0.8rem;" onclick="updateCartItemQty(${item.id}, -1)">-</button>
-                                <span>${item.qty}</span>
-                                <button class="btn-qty" style="width:24px; height:24px; font-size:0.8rem;" onclick="updateCartItemQty(${item.id}, 1)">+</button>
-                            </div>
-                            <div style="min-width: 85px; text-align: right; color: var(--accent-gold); font-weight: bold;">
-                                Rp ${subtotal.toLocaleString('id-ID')}
-                            </div>
-                            <button class="btn-delete-item" onclick="removeFromCart(${item.id})" title="Hapus">🗑️</button>
-                        </div>
-                    `;
-                }).join('');
-            }
-            document.getElementById('cartTotalPrice').textContent = `Rp ${totalPrice.toLocaleString('id-ID')}`;
-        }
-
-        document.getElementById('openCartBtn').addEventListener('click', () => cartModal.classList.remove('hidden'));
-        document.getElementById('closeCartBtn').addEventListener('click', () => cartModal.classList.add('hidden'));
-
-        document.getElementById('btnCheckout').addEventListener('click', () => {
-            const name = document.getElementById('custName').value;
-            const address = document.getElementById('custAddress').value;
-
-            if (cart.length === 0) {
-                alert('Keranjang panjenengan taksih kosong!');
-                return;
-            }
-            if (!name || !address) {
-                alert('Nyuwun tulung isi asma lan alamat jangkep!');
-                return;
-            }
-
-            let dataStok = JSON.parse(localStorage.getItem('batik_stok_v2')) || produkBatikDefault;
-            cart.forEach(cartItem => {
-                const itemInStok = dataStok.find(s => s.id === cartItem.id);
-                if (itemInStok) { itemInStok.stok -= cartItem.qty; }
-            });
-            localStorage.setItem('batik_stok_v2', JSON.stringify(dataStok));
-
-            alert(`Matur nuwun sanget ${name}, pesenan batik panjenengan sampun kasil dipun damel!`);
-            
-            cart = [];
-            updateCartUI();
-            document.getElementById('custAddress').value = '';
-            cartModal.classList.add('hidden');
-            renderProducts();
-        });
-    </script>
-</body>
-</html>
+                                <button class="btn-qty" style="width
