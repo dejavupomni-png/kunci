@@ -3,237 +3,529 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Index - Toko Online Batik</title>
+    <title>Toko Batik Megamendung - Warisan Budaya Jawa</title>
     <style>
         :root {
-            /* Tema Merah & Hitam */
-            --bg-main: #0a0000;
-            --bg-card: rgba(15, 5, 5, 0.85); /* Transparan gelap */
-            --bg-input: rgba(30, 5, 5, 0.6);
-            --text-main: #f8fafc;
-            --text-muted: #cbd5e1;
-            --accent: #ef4444; /* Merah menyala */
-            --accent-dark: #b91c1c; /* Merah gelap */
-            --border: #7f1d1d; /* Border merah gelap */
-            --danger: #ef4444;
+            --bg-main: #0a0505;
+            --bg-card: #180a0a;
+            --bg-input: #2a1010;
+            --text-main: #fcf8f2;
+            --text-muted: #d4a373;
+            --accent-red: #cc1100;
+            --accent-red-bright: #ff2a2a;
+            --accent-gold: #e5a93b;
+            --border: #4a1515;
             --success: #22c55e;
+            --danger: #ef4444;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
-        
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Georgia', 'Times New Roman', serif; }
+
         body { 
             background-color: var(--bg-main); 
-            /* Ganti URL di bawah ini dengan nama file gambar Megamendung Anda, misal: url('megamendung.jpg') */
-            background-image: linear-gradient(rgba(0, 0, 0, 0.75), rgba(40, 0, 0, 0.85)), url('https://img.freepik.com/premium-vector/megamendung-batik-pattern-background_69260-843.jpg');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="120" height="80" viewBox="0 0 120 80"><path d="M0 40 Q20 20 40 40 Q60 60 80 40 Q100 20 120 40 L120 80 L0 80 Z" fill="%231a0303" opacity="0.6"/><path d="M10 40 Q25 25 40 40 Q55 55 70 40 Q85 25 100 40" fill="none" stroke="%234a0d0d" stroke-width="3"/><path d="M20 40 Q30 30 40 40 Q50 50 60 40 Q70 30 80 40" fill="none" stroke="%23800f0f" stroke-width="2"/><path d="M30 40 Q35 35 40 40 Q45 45 50 40 Q55 35 60 40" fill="none" stroke="%23b31212" stroke-width="1.5"/></svg>');
+            background-repeat: repeat;
             color: var(--text-main); 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            min-height: 100vh; 
-            padding: 16px; 
+            padding-bottom: 60px; 
         }
 
-        .login-card { 
-            background: var(--bg-card); 
-            backdrop-filter: blur(8px); /* Efek blur kaca */
-            -webkit-backdrop-filter: blur(8px);
-            border: 1px solid var(--border); 
-            border-top: 4px solid var(--accent); /* Garis atas merah */
-            border-radius: 12px; 
-            padding: 28px 24px; 
-            width: 100%; 
-            max-width: 380px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8), 0 0 15px rgba(239, 68, 68, 0.2); 
-        }
-        
-        .role-tabs { display: flex; gap: 8px; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
-        .role-tab { flex: 1; padding: 10px; text-align: center; background: var(--bg-input); border: 1px solid transparent; border-radius: 6px; cursor: pointer; font-size: 0.85rem; color: var(--text-muted); font-weight: bold; transition: 0.3s; }
-        .role-tab:hover { background: rgba(239, 68, 68, 0.1); }
-        .role-tab.active { background: var(--accent-dark); color: #fff; border-color: var(--accent); box-shadow: 0 0 10px rgba(239, 68, 68, 0.3); }
-
-        .login-header { text-align: center; margin-bottom: 20px; }
-        .login-header h2 { font-size: 1.3rem; color: var(--accent); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 1px; }
-        .login-header p { font-size: 0.85rem; color: var(--text-muted); }
-
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 6px; }
-        .form-group input { width: 100%; padding: 12px; background: var(--bg-input); border: 1px solid var(--border); border-radius: 6px; color: var(--text-main); font-size: 0.95rem; outline: none; transition: 0.3s; }
-        .form-group input:focus { border-color: var(--accent); box-shadow: 0 0 8px rgba(239, 68, 68, 0.4); }
-
-        .btn { width: 100%; background: linear-gradient(135deg, var(--accent), var(--accent-dark)); color: #fff; font-weight: bold; padding: 12px; border: none; border-radius: 6px; cursor: pointer; font-size: 0.95rem; margin-top: 10px; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px; }
-        .btn:hover { background: linear-gradient(135deg, #f87171, var(--accent)); box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4); }
-        .btn:active { transform: scale(0.98); }
-        
-        .btn-guest { background: transparent; border: 1px dashed var(--border); color: var(--text-muted); margin-top: 12px; }
-        .btn-guest:hover { color: var(--accent); border-color: var(--accent); background: rgba(239, 68, 68, 0.05); box-shadow: none; }
-
-        .alert-box { padding: 10px 12px; border-radius: 6px; font-size: 0.85rem; text-align: center; margin-bottom: 15px; display: none; font-weight: bold; }
-        .alert-error { background: rgba(239, 68, 68, 0.15); border: 1px solid var(--danger); color: #fca5a5; }
-        .alert-success { background: rgba(34, 197, 94, 0.15); border: 1px solid var(--success); color: #86efac; }
-
-        .toggle-mode { font-size: 0.8rem; text-align: center; color: var(--text-muted); cursor: pointer; margin-top: 16px; transition: 0.2s; }
-        .toggle-mode:hover { color: var(--accent); text-decoration: underline; }
         .hidden { display: none !important; }
+
+        .login-wrapper {
+            display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 16px;
+        }
+        .login-card {
+            background: var(--bg-card); border: 2px solid var(--accent-gold); border-radius: 8px;
+            padding: 24px; width: 100%; max-width: 400px; box-shadow: 0 10px 25px rgba(0,0,0,0.9);
+            text-align: center;
+        }
+        .login-card h2 { color: var(--accent-gold); margin-bottom: 8px; text-transform: uppercase; font-size: 1.2rem; }
+        .login-card p { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 20px; font-style: italic; }
+
+        header {
+            position: sticky; top: 0; z-index: 100;
+            background: linear-gradient(180deg, #1f0505 0%, #120202 100%);
+            border-bottom: 2px solid var(--accent-gold);
+            padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.8);
+        }
+
+        .logo { 
+            font-size: 1.1rem; font-weight: bold; color: var(--accent-gold); 
+            text-decoration: none; text-transform: uppercase; letter-spacing: 1px;
+        }
+
+        .user-nav { display: flex; align-items: center; gap: 8px; }
+        .user-tag { 
+            font-size: 0.75rem; color: var(--accent-gold); 
+            background: var(--bg-input); padding: 5px 10px; border-radius: 4px; 
+            border: 1px solid var(--border); 
+        }
+
+        .btn-logout { 
+            background: transparent; border: 1px solid var(--accent-red); 
+            color: var(--accent-red-bright); padding: 5px 10px; border-radius: 4px; 
+            font-size: 0.75rem; cursor: pointer; transition: 0.2s;
+        }
+        .btn-logout:hover { background: var(--accent-red); color: #fff; }
+
+        .cart-btn {
+            background: var(--bg-input); border: 1px solid var(--accent-gold); color: var(--text-main);
+            padding: 6px 14px; border-radius: 4px; font-size: 0.85rem; cursor: pointer; 
+            display: flex; align-items: center; gap: 6px;
+        }
+        .cart-badge { background: var(--accent-red); color: #fff; font-weight: bold; padding: 2px 6px; border-radius: 10px; font-size: 0.75rem; }
+
+        .container { max-width: 1000px; margin: 0 auto; padding: 16px; }
+
+        .hero-banner {
+            background: linear-gradient(135deg, #3d0000 0%, #1a0202 100%);
+            border: 2px solid var(--accent-gold);
+            border-radius: 6px; padding: 20px 16px; margin-bottom: 20px; text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.7);
+        }
+        .hero-banner h2 { font-size: 1.2rem; color: var(--accent-gold); margin-bottom: 4px; text-transform: uppercase; }
+
+        .category-scroll { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 20px; scrollbar-width: none; }
+        .cat-chip {
+            background: var(--bg-card); border: 1px solid var(--border); color: var(--text-muted);
+            padding: 8px 16px; border-radius: 4px; font-size: 0.8rem; white-space: nowrap; cursor: pointer;
+        }
+        .cat-chip.active { background: var(--accent-red); color: #fff; font-weight: bold; border-color: var(--accent-gold); }
+
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; }
+        .product-card {
+            background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px;
+            padding: 12px; display: flex; flex-direction: column; justify-content: space-between;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+        }
+        .product-img { width: 100%; height: 180px; object-fit: cover; border-radius: 4px; background: var(--bg-input); margin-bottom: 8px; border: 1px solid var(--border); }
+        .product-title { font-size: 0.85rem; font-weight: bold; color: var(--text-main); margin-bottom: 4px; line-height: 1.2; }
+        .product-cat { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 8px; font-style: italic; }
+        .product-price { color: var(--accent-gold); font-weight: bold; font-size: 0.95rem; margin-bottom: 10px; }
+        
+        .btn-add { 
+            background: linear-gradient(180deg, #b30f0f 0%, #7a0000 100%); 
+            color: #fff; border: 1px solid var(--accent-gold); padding: 8px; 
+            border-radius: 4px; font-weight: bold; font-size: 0.8rem; cursor: pointer; width: 100%; text-transform: uppercase;
+        }
+        .btn-add:hover { background: var(--accent-red-bright); }
+
+        .modal { 
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0; 
+            background: rgba(0,0,0,0.85); z-index: 200; display: flex; 
+            justify-content: center; align-items: center; padding: 16px; backdrop-filter: blur(5px); 
+        }
+        .modal-card { 
+            background: var(--bg-card); border: 2px solid var(--accent-gold); border-radius: 6px; 
+            padding: 20px; width: 100%; max-width: 450px; max-height: 90vh; overflow-y: auto; 
+        }
+
+        .preview-img { width: 100%; max-height: 250px; object-fit: cover; border-radius: 4px; margin-bottom: 12px; border: 1px solid var(--border); }
+        .qty-control { display: flex; align-items: center; justify-content: center; gap: 12px; margin: 12px 0; }
+        .btn-qty { background: var(--bg-input); border: 1px solid var(--accent-gold); color: var(--text-main); width: 32px; height: 32px; border-radius: 4px; font-weight: bold; cursor: pointer; }
+        .qty-value { font-size: 1rem; font-weight: bold; color: var(--accent-gold); min-width: 30px; text-align: center; }
+
+        .cart-item-row { display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; padding: 10px 0; border-bottom: 1px solid var(--border); }
+        .btn-delete-item { background: transparent; border: none; color: var(--danger); cursor: pointer; font-size: 1rem; }
+
+        .form-group { margin-bottom: 12px; text-align: left; }
+        .form-group label { display: block; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 4px; text-transform: uppercase; }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%; padding: 8px 10px; background: var(--bg-input); border: 1px solid var(--border);
+            border-radius: 4px; color: var(--text-main); font-size: 0.85rem; outline: none;
+        }
+        .form-group input:focus, .form-group select:focus { border-color: var(--accent-gold); }
+        .btn-close { background: var(--accent-red); color: white; border: none; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; }
+        .btn-cancel { background: var(--bg-input); border: 1px solid var(--border); color: var(--text-main); padding: 8px; border-radius: 4px; width: 100%; cursor: pointer; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <div class="login-card">
-        <div class="role-tabs">
-            <div class="role-tab active" onclick="switchRole('pembeli')">🛒 Pembeli</div>
-            <div class="role-tab" onclick="switchRole('admin')">🔒 Admin</div>
-        </div>
-
-        <div id="alertBox" class="alert-box"></div>
-
-        <!-- HEADER PEMBELI -->
-        <div id="pembeliHeader" class="login-header">
-            <h2 id="pembeliTitle">Portal Pembeli</h2>
-            <p>Silakan isi username & password Anda</p>
-        </div>
-
-        <!-- HEADER ADMIN -->
-        <div id="adminHeader" class="login-header hidden">
-            <h2>Panel Admin</h2>
-            <p>Akses khusus pengelola toko</p>
-        </div>
-
-        <form id="authForm" onsubmit="return false;">
-            <div class="form-group">
-                <label>Username</label>
-                <input type="text" id="username" placeholder="Masukkan username" required autocomplete="off">
+    <div class="login-wrapper" id="loginSection">
+        <div class="login-card">
+            <h2>꧁ Masuk Toko Batik ꧂</h2>
+            <p>Silakan masukkan nama Anda untuk mulai berbelanja</p>
+            <div id="loginForm">
+                <div class="form-group">
+                    <label>Nama / Asma Panjenengan</label>
+                    <input type="text" id="inputUsername" placeholder="Contoh: Dimas Panji" required autocomplete="off">
+                </div>
+                <button type="button" class="btn-add" style="margin-top: 10px; padding: 10px;" onclick="prosesLoginManual()">Masuk / Mlebet</button>
             </div>
-            <div class="form-group">
-                <label>Password</label>
-                <input type="password" id="password" placeholder="Masukkan password" required>
+        </div>
+    </div>
+
+    <div id="shopSection" class="hidden">
+        <header>
+            <a href="#" class="logo">꧁ ⚡ Batik Megamendung ꧂</a>
+            <div class="user-nav">
+                <span class="user-tag" id="userDisplay">👤 Guest</span>
+                <button class="cart-btn" id="openCartBtn">
+                    🛒 <span class="cart-badge" id="cartCount">0</span>
+                </button>
+                <button class="btn-logout" id="btnLogoutUser" onclick="handleLogout()">Metu</button>
+            </div>
+        </header>
+
+        <div class="container">
+            <div class="hero-banner">
+                <h2>Pusat Kain & Busana Batik Khas Nusantara</h2>
+                <p style="font-size: 0.85rem; color: var(--text-muted); font-style: italic;">Motif Luhur Jawi, Kualitas Terbaik, Pengiriman Enggal!</p>
             </div>
 
-            <button type="button" id="btnSubmit" class="btn">Masuk Toko</button>
+            <div class="category-scroll" id="catFilter">
+                <button class="cat-chip active" onclick="filterCategory('ALL', this)">Sedaya (Semua)</button>
+                <button class="cat-chip" onclick="filterCategory('Batik Tulis', this)">Batik Tulis</button>
+                <button class="cat-chip" onclick="filterCategory('Batik Cap', this)">Batik Cap</button>
+                <button class="cat-chip" onclick="filterCategory('Batik Keraton', this)">Batik Keraton</button>
+                <button class="cat-chip" onclick="filterCategory('Batik Pesisir', this)">Batik Pesisir</button>
+                <button class="cat-chip" onclick="filterCategory('Busana', this)">Busana Pria/Wanita</button>
+            </div>
+
+            <div class="product-grid" id="productGrid"></div>
+        </div>
+    </div>
+
+    <div class="modal hidden" id="productModal">
+        <div class="modal-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid var(--border); padding-bottom: 8px;">
+                <h3 style="font-size: 1rem; color: var(--accent-gold);" id="modalProdTitle">Detail Produk</h3>
+                <button class="btn-close" onclick="closeProductModal()">✕</button>
+            </div>
+
+            <img id="modalProdImg" src="" class="preview-img" alt="Product Image">
             
-            <div id="pembeliActions">
-                <button type="button" id="btnGuest" class="btn btn-guest">Masuk Sebagai Tamu</button>
-                <div class="toggle-mode" id="toggleReg">Atau daftar manual di sini</div>
+            <div style="margin-bottom: 10px;">
+                <div id="modalProdCat" style="font-size: 0.8rem; color: var(--text-muted);">Kategori</div>
+                <div id="modalProdPrice" style="font-size: 1.2rem; color: var(--accent-gold); font-weight: bold; margin-top: 2px;">Rp 0</div>
+                <div id="modalProdStock" style="font-size: 0.85rem; color: var(--text-main); margin-top: 4px;">Stok Wonten: 0</div>
             </div>
-        </form>
+
+            <div style="border-top: 1px solid var(--border); padding-top: 10px;">
+                <label style="font-size: 0.8rem; color: var(--text-muted); display: block; text-align: center;">Cacahing ingkang dipun tumbas:</label>
+                <div class="qty-control">
+                    <button class="btn-qty" onclick="changeQty(-1)">-</button>
+                    <span class="qty-value" id="selectedQty">1</span>
+                    <button class="btn-qty" onclick="changeQty(1)">+</button>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 8px; margin-top: 12px;">
+                <button class="btn-cancel" onclick="closeProductModal()">Batal</button>
+                <button class="btn-add" id="btnConfirmAddToCart" style="padding: 10px;">+ Tambah Keranjang</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal hidden" id="cartModal">
+        <div class="modal-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid var(--border); padding-bottom: 8px;">
+                <h3 style="font-size: 1rem; color: var(--accent-gold);">Keranjang Tumbasan</h3>
+                <button class="btn-close" id="closeCartBtn">✕</button>
+            </div>
+
+            <div id="cartItemsList" style="margin-bottom: 12px; border-bottom: 1px solid var(--border); padding-bottom: 8px; max-height: 40vh; overflow-y: auto;"></div>
+
+            <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 0.95rem; margin-bottom: 12px; color: var(--text-main);">
+                <span>Total Bayar:</span>
+                <span id="cartTotalPrice" style="color: var(--accent-gold);">Rp 0</span>
+            </div>
+
+            <div id="checkoutForm">
+                <div class="form-group">
+                    <label>Nami Jangkep / Asma</label>
+                    <input type="text" id="custName" placeholder="Mlebetaken asma panjenengan..." required>
+                </div>
+                <div class="form-group">
+                    <label>Alamat Pangiriman</label>
+                    <textarea id="custAddress" rows="2" placeholder="Mlebetaken alamat jangkep..." required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Cara Pembayaran</label>
+                    <select id="payMethod">
+                        <option value="QRIS / E-Wallet">QRIS / E-Wallet</option>
+                        <option value="Transfer Bank">Transfer Bank</option>
+                        <option value="COD">COD (Bayar ing Papan)</option>
+                    </select>
+                </div>
+                <button type="button" id="btnCheckout" class="btn-add" style="padding: 10px; margin-top: 8px;">Bayar Saniki</button>
+            </div>
+        </div>
     </div>
 
     <script>
-        let currentRole = 'pembeli'; // 'pembeli' atau 'admin'
-        let isRegisterMode = false;
-
-        const ADMIN_USER = "admin";
-        const ADMIN_PASS = "admin123";
-
-        function showAlert(msg, isSuccess = false) {
-            const box = document.getElementById('alertBox');
-            box.className = `alert-box ${isSuccess ? 'alert-success' : 'alert-error'}`;
-            box.textContent = msg;
-            box.style.display = 'block';
-        }
-
-        function hideAlert() {
-            document.getElementById('alertBox').style.display = 'none';
-        }
-
-        function switchRole(role) {
-            currentRole = role;
-            isRegisterMode = false;
-            hideAlert();
-
-            document.querySelectorAll('.role-tab').forEach(t => t.classList.remove('active'));
-            if (role === 'pembeli') {
-                document.querySelectorAll('.role-tab')[0].classList.add('active');
-                document.getElementById('pembeliHeader').classList.remove('hidden');
-                document.getElementById('adminHeader').classList.add('hidden');
-                document.getElementById('pembeliActions').classList.remove('hidden');
-                document.getElementById('pembeliTitle').textContent = "Portal Pembeli";
-                document.getElementById('btnSubmit').textContent = "Masuk Toko";
-                document.getElementById('toggleReg').textContent = "Atau daftar manual di sini";
-            } else {
-                document.querySelectorAll('.role-tab')[1].classList.add('active');
-                document.getElementById('pembeliHeader').classList.add('hidden');
-                document.getElementById('adminHeader').classList.remove('hidden');
-                document.getElementById('pembeliActions').classList.add('hidden');
-                document.getElementById('btnSubmit').textContent = "Masuk Panel Admin";
+        // Menggunakan Gambar Foto Asli Batik stabil via Unsplash agar lebih mudah diload
+        const produkBatikDefault = [
+            { 
+                id: 1, 
+                nama: "Kain Batik Tulis Motif Megamendung Cirebon", 
+                kategori: "Batik Pesisir", 
+                harga: 450000, 
+                stok: 15, 
+                gambar: "https://images.unsplash.com/photo-1605335193910-c0812e95a9d8?w=500&auto=format&fit=crop" 
+            },
+            { 
+                id: 2, 
+                nama: "Batik Klasik Parang Kusumo Keraton Solo", 
+                kategori: "Batik Keraton", 
+                harga: 380000, 
+                stok: 20, 
+                gambar: "https://images.unsplash.com/photo-1605335133649-14a022b7aee2?w=500&auto=format&fit=crop" 
+            },
+            { 
+                id: 3, 
+                nama: "Kain Batik Tulis Motif Kawung Jogja", 
+                kategori: "Batik Tulis", 
+                harga: 550000, 
+                stok: 10, 
+                gambar: "https://images.unsplash.com/photo-1596484552834-6a58f850e0a1?w=500&auto=format&fit=crop" 
+            },
+            { 
+                id: 4, 
+                nama: "Batik Cap Tujuh Rupa Pesisir Pekalongan", 
+                kategori: "Batik Cap", 
+                harga: 185000, 
+                stok: 45, 
+                gambar: "https://images.unsplash.com/photo-1605335161421-4d4361eb2bb5?w=500&auto=format&fit=crop" 
+            },
+            { 
+                id: 5, 
+                nama: "Kain Batik Tulis Motif Bunga Lasem Rembang", 
+                kategori: "Batik Tulis", 
+                harga: 720000, 
+                stok: 8, 
+                gambar: "https://images.unsplash.com/photo-1611077543940-5e36f7847bd6?w=500&auto=format&fit=crop" 
+            },
+            { 
+                id: 6, 
+                nama: "Kemeja Lengan Pendek Motif Sido Asih", 
+                kategori: "Busana", 
+                harga: 275000, 
+                stok: 25, 
+                gambar: "https://images.unsplash.com/photo-1611116260275-3004812fcc6a?w=500&auto=format&fit=crop" 
             }
+        ];
+
+        if (!localStorage.getItem('batik_stok_v3')) {
+            localStorage.setItem('batik_stok_v3', JSON.stringify(produkBatikDefault));
         }
 
-        document.getElementById('toggleReg').addEventListener('click', () => {
-            isRegisterMode = !isRegisterMode;
-            hideAlert();
-            if (isRegisterMode) {
-                document.getElementById('pembeliTitle').textContent = "Pendaftaran Baru";
-                document.getElementById('btnSubmit').textContent = "Buat Akun";
-                document.getElementById('toggleReg').textContent = "Sudah punya akun? Login di sini";
-            } else {
-                document.getElementById('pembeliTitle').textContent = "Portal Pembeli";
-                document.getElementById('btnSubmit').textContent = "Masuk Toko";
-                document.getElementById('toggleReg').textContent = "Atau daftar manual di sini";
+        let cart = [];
+        let selectedProduct = null;
+        let currentBuyQty = 1;
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedUser = localStorage.getItem('tp_user_session');
+            if (savedUser) {
+                showShop(savedUser);
             }
         });
 
-        document.getElementById('btnSubmit').addEventListener('click', () => {
-            const user = document.getElementById('username').value.trim();
-            const pass = document.getElementById('password').value.trim();
-
-            if (!user || !pass) {
-                showAlert("Mohon isi username dan password!");
+        // FUNGSI LOGIN YANG SUDAH DIPERBAIKI (TIDAK REFRESH)
+        function prosesLoginManual() {
+            const username = document.getElementById('inputUsername').value.trim();
+            
+            if (!username) {
+                alert("Nyuwun tulung, asma panjenengan kedah dipun isi! (Mohon isi nama Anda dulu!)");
                 return;
             }
 
-            if (currentRole === 'admin') {
-                if (user === ADMIN_USER && pass === ADMIN_PASS) {
-                    localStorage.setItem('tp_admin_session', 'true');
-                    window.location.href = 'admin.html';
+            localStorage.setItem('tp_user_session', username);
+            showShop(username);
+        }
+
+        function showShop(username) {
+            document.getElementById('loginSection').classList.add('hidden');
+            document.getElementById('shopSection').classList.remove('hidden');
+            document.getElementById('userDisplay').textContent = `👤 ${username}`;
+            document.getElementById('custName').value = username;
+            renderProducts();
+        }
+
+        function handleLogout() {
+            localStorage.removeItem('tp_user_session');
+            document.getElementById('shopSection').classList.add('hidden');
+            document.getElementById('loginSection').classList.remove('hidden');
+            document.getElementById('inputUsername').value = '';
+        }
+
+        const productGrid = document.getElementById('productGrid');
+        const cartModal = document.getElementById('cartModal');
+        const productModal = document.getElementById('productModal');
+
+        function renderProducts(filter = 'ALL') {
+            let dataStok = JSON.parse(localStorage.getItem('batik_stok_v3')) || produkBatikDefault;
+            let filteredData = dataStok;
+            if (filter !== 'ALL') {
+                filteredData = dataStok.filter(p => p.kategori.toLowerCase().includes(filter.toLowerCase()));
+            }
+
+            if (filteredData.length === 0) {
+                productGrid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 20px;">Dereng wonten produk.</div>';
+                return;
+            }
+
+            productGrid.innerHTML = filteredData.map(p => `
+                <div class="product-card">
+                    <div>
+                        <img src="${p.gambar}" class="product-img" alt="${p.nama}">
+                        <div class="product-title">${p.nama}</div>
+                        <div class="product-cat">${p.kategori} | Stok: ${p.stok}</div>
+                    </div>
+                    <div>
+                        <div class="product-price">Rp ${p.harga.toLocaleString('id-ID')}</div>
+                        <button class="btn-add" onclick="openProductModal(${p.id})">+ Tumbas</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterCategory(cat, element) {
+            document.querySelectorAll('.cat-chip').forEach(c => c.classList.remove('active'));
+            element.classList.add('active');
+            renderProducts(cat);
+        }
+
+        function openProductModal(id) {
+            let dataStok = JSON.parse(localStorage.getItem('batik_stok_v3')) || produkBatikDefault;
+            selectedProduct = dataStok.find(p => p.id === id);
+            if (!selectedProduct || selectedProduct.stok <= 0) {
+                alert('Ngapura, stok kain taksih selak kosong!');
+                return;
+            }
+
+            currentBuyQty = 1;
+            document.getElementById('modalProdTitle').textContent = selectedProduct.nama;
+            document.getElementById('modalProdImg').src = selectedProduct.gambar;
+            document.getElementById('modalProdCat').textContent = `Jinising Motif: ${selectedProduct.kategori}`;
+            document.getElementById('modalProdPrice').textContent = `Rp ${selectedProduct.harga.toLocaleString('id-ID')}`;
+            document.getElementById('modalProdStock').textContent = `Stok Wonten: ${selectedProduct.stok}`;
+            document.getElementById('selectedQty').textContent = currentBuyQty;
+
+            productModal.classList.remove('hidden');
+        }
+
+        function closeProductModal() {
+            productModal.classList.add('hidden');
+            selectedProduct = null;
+        }
+
+        function changeQty(amount) {
+            if (!selectedProduct) return;
+            let newQty = currentBuyQty + amount;
+            if (newQty >= 1 && newQty <= selectedProduct.stok) {
+                currentBuyQty = newQty;
+                document.getElementById('selectedQty').textContent = currentBuyQty;
+            }
+        }
+
+        document.getElementById('btnConfirmAddToCart').addEventListener('click', () => {
+            if (!selectedProduct) return;
+            const itemInCart = cart.find(c => c.id === selectedProduct.id);
+            if (itemInCart) {
+                if (itemInCart.qty + currentBuyQty <= selectedProduct.stok) {
+                    itemInCart.qty += currentBuyQty;
                 } else {
-                    showAlert("Username/Password Admin Salah!");
+                    alert('Jumlah barang di keranjang ngluwihi stok!');
+                    return;
                 }
             } else {
-                let userList = JSON.parse(localStorage.getItem('tp_users')) || [];
-
-                if (isRegisterMode) {
-                    const exist = userList.find(u => u.username.toLowerCase() === user.toLowerCase());
-                    if (exist) {
-                        showAlert("Username sudah terdaftar! Gunakan username lain.");
-                        return;
-                    }
-
-                    userList.push({ username: user, password: pass });
-                    localStorage.setItem('tp_users', JSON.stringify(userList));
-                    localStorage.setItem('tp_user_session', user);
-                    
-                    showAlert("Akun berhasil dibuat! Dialihkan...", true);
-                    setTimeout(() => window.location.href = 'pembeli.html', 1000);
-                } else {
-                    const foundUser = userList.find(u => u.username.toLowerCase() === user.toLowerCase());
-                    
-                    if (foundUser) {
-                        // Jika akun sudah ada di LocalStorage, cocokkan password-nya
-                        if (foundUser.password === pass) {
-                            localStorage.setItem('tp_user_session', foundUser.username);
-                            window.location.href = 'pembeli.html';
-                        } else {
-                            showAlert("Password salah untuk username ini!");
-                        }
-                    } else {
-                        // OTOMATIS DAFTAR & LOGIN jika username belum pernah ada
-                        userList.push({ username: user, password: pass });
-                        localStorage.setItem('tp_users', JSON.stringify(userList));
-                        localStorage.setItem('tp_user_session', user);
-                        
-                        showAlert("Akun baru berhasil dibuat! Dialihkan...", true);
-                        setTimeout(() => window.location.href = 'pembeli.html', 800);
-                    }
-                }
+                cart.push({ ...selectedProduct, qty: currentBuyQty });
             }
+            updateCartUI();
+            closeProductModal();
         });
 
-        document.getElementById('btnGuest').addEventListener('click', () => {
-            localStorage.setItem('tp_user_session', 'Tamu / Guest');
-            window.location.href = 'pembeli.html';
+        function updateCartItemQty(id, change) {
+            let dataStok = JSON.parse(localStorage.getItem('batik_stok_v3')) || produkBatikDefault;
+            const item = cart.find(c => c.id === id);
+            if (!item) return;
+
+            const productInStok = dataStok.find(s => s.id === id);
+            let newQty = item.qty + change;
+
+            if (newQty <= 0) {
+                removeFromCart(id);
+            } else if (productInStok && newQty <= productInStok.stok) {
+                item.qty = newQty;
+                updateCartUI();
+            } else {
+                alert('Jumlah ngluwihi stok!');
+            }
+        }
+
+        function removeFromCart(id) {
+            cart = cart.filter(c => c.id !== id);
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            const totalQty = cart.reduce((sum, item) => sum + item.qty, 0);
+            document.getElementById('cartCount').textContent = totalQty;
+
+            const cartItemsList = document.getElementById('cartItemsList');
+            let totalPrice = 0;
+
+            if (cart.length === 0) {
+                cartItemsList.innerHTML = '<div style="text-align:center; color: var(--text-muted); font-size:0.85rem; padding: 15px;">Keranjang taksih kosong.</div>';
+            } else {
+                cartItemsList.innerHTML = cart.map(item => {
+                    const subtotal = item.harga * item.qty;
+                    totalPrice += subtotal;
+                    return `
+                        <div class="cart-item-row">
+                            <div style="flex: 1; padding-right: 10px;">
+                                <b style="color: var(--text-main);">${item.nama}</b><br>
+                                <span style="color:var(--text-muted); font-size: 0.75rem;">Rp ${item.harga.toLocaleString('id-ID')} / lembar</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <button class="btn-qty" style="width:24px; height:24px; font-size:0.8rem;" onclick="updateCartItemQty(${item.id}, -1)">-</button>
+                                <span>${item.qty}</span>
+                                <button class="btn-qty" style="width:24px; height:24px; font-size:0.8rem;" onclick="updateCartItemQty(${item.id}, 1)">+</button>
+                            </div>
+                            <div style="min-width: 85px; text-align: right; color: var(--accent-gold); font-weight: bold;">
+                                Rp ${subtotal.toLocaleString('id-ID')}
+                            </div>
+                            <button class="btn-delete-item" onclick="removeFromCart(${item.id})" title="Hapus">🗑️</button>
+                        </div>
+                    `;
+                }).join('');
+            }
+            document.getElementById('cartTotalPrice').textContent = `Rp ${totalPrice.toLocaleString('id-ID')}`;
+        }
+
+        document.getElementById('openCartBtn').addEventListener('click', () => cartModal.classList.remove('hidden'));
+        document.getElementById('closeCartBtn').addEventListener('click', () => cartModal.classList.add('hidden'));
+
+        // TYPO CHECKOUT JUGA SUDAH DIPERBAIKI DI SINI
+        document.getElementById('btnCheckout').addEventListener('click', () => {
+            const name = document.getElementById('custName').value;
+            const address = document.getElementById('custAddress').value;
+
+            if (cart.length === 0) {
+                alert('Keranjang panjenengan taksih kosong!');
+                return;
+            }
+            if (!name || !address) {
+                alert('Nyuwun tulung isi asma lan alamat jangkep!');
+                return;
+            }
+
+            let dataStok = JSON.parse(localStorage.getItem('batik_stok_v3')) || produkBatikDefault;
+            cart.forEach(cartItem => {
+                const itemInStok = dataStok.find(s => s.id === cartItem.id); 
+                if (itemInStok) { itemInStok.stok -= cartItem.qty; }
+            });
+            localStorage.setItem('batik_stok_v3', JSON.stringify(dataStok));
+
+            alert(`Matur nuwun sanget ${name}, pesenan batik panjenengan sampun kasil dipun damel!`);
+            
+            cart = [];
+            updateCartUI();
+            document.getElementById('custAddress').value = '';
+            cartModal.classList.add('hidden');
+            renderProducts();
         });
     </script>
 </body>
