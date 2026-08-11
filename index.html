@@ -3,833 +3,369 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - Panel Pengelola ⚡</title>
+    <title>Portal Masuk - ElectroGlow ⚡</title>
     <style>
         :root {
-            /* Tema Gelap dengan Aksen Elektrik */
-            --bg-main: #090e17; /* Lebih gelap dari sebelumnya */
-            --bg-card: #121b29;
-            --bg-input: #1e293b;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --accent: #facc15; /* Kuning Petir / Electric Yellow */
-            --accent-hover: #eab308;
-            --accent-glow: rgba(250, 204, 21, 0.5);
-            --border: #334155;
-            --danger: #ef4444;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --purple: #8b5cf6;
-            --cyan: #06b6d4;
+            --bg-main: #06080f;
+            --bg-card: rgba(18, 10, 25, 0.85);
+            --bg-input: rgba(30, 15, 35, 0.9);
+            --text-main: #fcfcfc;
+            --text-muted: #a397ad;
+            --neon-red: #ff2a5f;
+            --neon-yellow: #ffcc00;
+            --neon-cyan: #00f0ff;
+            --border-color: rgba(255, 42, 95, 0.4);
+            --border-yellow: rgba(255, 204, 0, 0.5);
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
-        body { background-color: var(--bg-main); color: var(--text-main); min-height: 100vh; }
-        .hidden { display: none !important; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
 
-        /* Animasi Aksen Petir */
+        body {
+            background-color: var(--bg-main);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(255, 42, 95, 0.15), transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(255, 204, 0, 0.12), transparent 40%),
+                radial-gradient(circle at 50% 50%, rgba(0, 240, 255, 0.05), transparent 60%);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
         @keyframes thunderGlow {
-            0% { text-shadow: 0 0 5px var(--accent-glow); }
-            50% { text-shadow: 0 0 20px var(--accent), 0 0 30px var(--accent); }
-            100% { text-shadow: 0 0 5px var(--accent-glow); }
+            0% { text-shadow: 0 0 10px rgba(255, 204, 0, 0.4), 0 0 20px rgba(255, 42, 95, 0.2); }
+            50% { text-shadow: 0 0 25px var(--neon-yellow), 0 0 35px var(--neon-red), 0 0 45px var(--neon-cyan); }
+            100% { text-shadow: 0 0 10px rgba(255, 204, 0, 0.4), 0 0 20px rgba(255, 42, 95, 0.2); }
         }
 
-        #dashboard-page { display: flex; min-height: 100vh; }
-        
-        aside {
-            width: 230px; 
-            background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg-main) 100%);
-            border-right: 1px solid var(--border);
-            position: fixed; top: 0; bottom: 0; left: 0; z-index: 10; transition: 0.3s;
-            display: flex; flex-direction: column; justify-content: space-between;
+        @keyframes cardFloat {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-6px); }
+            100% { transform: translateY(0px); }
         }
-        
-        .brand { 
-            padding: 20px 16px; 
-            font-weight: 900; 
-            color: var(--accent); 
-            border-bottom: 1px solid var(--border);
-            font-size: 1.2rem;
-            letter-spacing: 1px;
+
+        .portal-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 40px 30px;
+            max-width: 440px;
+            width: 100%;
+            text-align: center;
+            backdrop-filter: blur(16px);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8), 0 0 30px rgba(255, 42, 95, 0.15);
+            animation: cardFloat 6s ease-in-out infinite;
+            position: relative;
+        }
+
+        .portal-card::before {
+            content: '';
+            position: absolute;
+            top: -2px; left: -2px; right: -2px; bottom: -2px;
+            background: linear-gradient(45deg, var(--neon-red), transparent, var(--neon-yellow));
+            border-radius: 22px;
+            z-index: -1;
+            opacity: 0.3;
+        }
+
+        .brand-icon {
+            font-size: 2.5rem;
+            margin-bottom: 8px;
+            display: inline-block;
+            filter: drop-shadow(0 0 10px var(--neon-yellow));
+        }
+
+        .brand-title {
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: var(--neon-yellow);
+            margin-bottom: 6px;
+            animation: thunderGlow 3s infinite alternate;
+            letter-spacing: 1.5px;
             text-transform: uppercase;
-            animation: thunderGlow 2s infinite alternate;
         }
-        
-        .menu { list-style: none; padding-top: 10px; }
-        .menu a { 
-            display: flex; align-items: center; gap: 10px;
-            padding: 12px 16px; color: var(--text-muted); 
-            text-decoration: none; font-size: 0.9rem; 
-            border-left: 3px solid transparent;
+
+        .brand-subtitle {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            margin-bottom: 32px;
+            line-height: 1.4;
+        }
+
+        .role-selection {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .btn-role {
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 16px 20px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-role:hover {
+            border-color: var(--neon-yellow);
+            color: var(--neon-yellow);
+            transform: scale(1.02);
+            box-shadow: 0 0 20px rgba(255, 204, 0, 0.25);
+            background: rgba(45, 20, 50, 0.95);
+        }
+
+        .btn-admin-choice {
+            background: linear-gradient(90deg, rgba(255, 42, 95, 0.15), rgba(255, 204, 0, 0.15));
+            border-color: var(--border-yellow);
+            color: var(--neon-yellow);
+        }
+
+        .btn-admin-choice:hover {
+            border-color: var(--neon-red);
+            color: var(--text-main);
+            box-shadow: 0 0 20px rgba(255, 42, 95, 0.35);
+        }
+
+        .badge-tag {
+            font-size: 0.75rem;
+            padding: 4px 8px;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* MODAL LOGIN */
+        .modal {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(2, 4, 10, 0.88);
+            z-index: 200;
+            display: flex; justify-content: center; align-items: center;
+            padding: 20px;
+            backdrop-filter: blur(12px);
+        }
+
+        .modal-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 28px 24px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 0 40px rgba(255, 42, 95, 0.25);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 12px;
+        }
+
+        .modal-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--neon-yellow);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-group { margin-bottom: 16px; text-align: left; }
+        .form-group label { display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 6px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+        .form-group input {
+            width: 100%; padding: 12px 14px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-main);
+            outline: none;
+            font-size: 0.95rem;
             transition: all 0.2s;
         }
-        .menu a.active, .menu a:hover { 
-            background: rgba(250, 204, 21, 0.1); 
-            color: var(--accent); 
-            border-left: 3px solid var(--accent);
+        .form-group input:focus {
+            border-color: var(--neon-yellow);
+            box-shadow: 0 0 12px rgba(255, 204, 0, 0.3);
+            background: rgba(45, 20, 55, 1);
         }
 
-        main { margin-left: 230px; flex: 1; padding: 20px; width: calc(100% - 230px); }
-        
-        header { 
-            display: flex; justify-content: space-between; align-items: center; 
-            background: var(--bg-card); padding: 14px 20px; 
-            border-radius: 8px; margin-bottom: 20px; 
-            border-bottom: 2px solid var(--accent);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        .btn-action {
+            width: 100%;
+            background: linear-gradient(90deg, var(--neon-red), #d68900);
+            color: #fff;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            font-weight: 800;
+            font-size: 0.95rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: 0.3s;
+            margin-top: 10px;
         }
-        
-        .toggle-btn { display: none; background: none; border: none; color: var(--accent); font-size: 1.5rem; cursor: pointer; }
-
-        .card-box { 
-            background: var(--bg-card); 
-            border: 1px solid var(--border); 
-            border-radius: 8px; padding: 20px; margin-bottom: 20px; 
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-        .card-box h3 { 
-            font-size: 1.1rem; color: var(--accent); margin-bottom: 16px; 
-            border-bottom: 1px solid var(--border); padding-bottom: 8px; 
-            display: flex; align-items: center; gap: 8px;
-        }
-
-        .form-group { margin-bottom: 16px; }
-        .form-group label { display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 6px; font-weight: 500;}
-        .form-group input, .form-group select {
-            width: 100%; padding: 10px 14px; background: var(--bg-input); 
-            border: 1px solid var(--border); border-radius: 6px; 
-            color: var(--text-main); outline: none; font-size: 0.95rem;
-            transition: 0.2s;
-        }
-        .form-group input:focus, .form-group select:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 8px var(--accent-glow);
-        }
-
-        .btn { 
-            width: 100%; background: var(--accent); color: #000; 
-            font-weight: bold; padding: 12px; border: none; 
-            border-radius: 6px; cursor: pointer; font-size: 0.95rem; 
-            transition: all 0.2s; text-transform: uppercase; letter-spacing: 1px;
-        }
-        .btn:hover { 
-            background: var(--accent-hover); 
-            box-shadow: 0 0 15px var(--accent-glow); 
+        .btn-action:hover {
+            box-shadow: 0 0 20px rgba(255, 42, 95, 0.6);
             transform: translateY(-2px);
         }
-        
-        .btn-del { background: var(--danger); color: #fff; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; font-weight: bold; }
-        .btn-del:hover { background: #dc2626; box-shadow: 0 0 8px rgba(239,68,68,0.5); }
-        
-        .btn-reset { background: transparent; border: 1px solid var(--danger); color: var(--danger); padding: 8px 14px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-weight: bold; }
-        .btn-reset:hover { background: var(--danger); color: white; box-shadow: 0 0 10px rgba(239,68,68,0.4); }
-        
-        .btn-logout { background: transparent; color: var(--danger); border: 1px solid var(--danger); margin: 16px; padding: 10px; border-radius: 6px; text-align: center; cursor: pointer; font-size: 0.85rem; font-weight: bold; transition: 0.2s; }
-        .btn-logout:hover { background: rgba(239, 68, 68, 0.1); box-shadow: 0 0 10px rgba(239,68,68,0.3); }
 
-        .stats-grid-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; }
-        .quick-action-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-        
-        .quick-action-card { 
-            background: var(--bg-input); border: 1px solid var(--border); 
-            border-radius: 8px; padding: 16px 10px; text-align: center; 
-            color: var(--text-main); text-decoration: none; 
-            display: flex; flex-direction: column; align-items: center; 
-            justify-content: center; gap: 8px; transition: 0.2s;
+        .btn-close {
+            background: transparent; color: var(--text-muted);
+            border: none; font-size: 1.3rem; cursor: pointer;
+            transition: 0.2s;
         }
-        .quick-action-card:hover {
-            border-color: var(--accent);
-            transform: translateY(-3px);
-            box-shadow: 0 4px 12px var(--accent-glow);
+        .btn-close:hover { color: var(--neon-red); transform: rotate(90deg); }
+
+        .hint-box {
+            background: rgba(255, 204, 0, 0.08);
+            border: 1px dashed var(--neon-yellow);
+            border-radius: 8px;
+            padding: 10px 12px;
+            font-size: 0.78rem;
+            color: var(--neon-yellow);
+            margin-bottom: 16px;
+            text-align: left;
+            line-height: 1.4;
         }
 
-        .dashboard-grid-2col { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
-
-        .table-container { overflow-x: auto; border-radius: 6px; border: 1px solid var(--border); }
-        table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem; }
-        th, td { padding: 12px 16px; border-bottom: 1px solid var(--border); }
-        th { background: var(--bg-input); color: var(--cyan); font-weight: 600; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.5px; }
-        tr:hover td { background: rgba(255,255,255,0.02); }
-
-        /* Progress Bar Style */
-        .progress-bar-bg { width: 100%; background: var(--bg-input); height: 10px; border-radius: 5px; overflow: hidden; margin-top: 8px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.5); }
-        .progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--cyan), var(--accent)); transition: width 0.3s; box-shadow: 0 0 10px var(--accent-glow); }
-
-        /* Footer Dashboard */
-        .dashboard-footer { text-align: center; font-size: 0.8rem; color: var(--text-muted); padding: 20px 0; border-top: 1px solid var(--border); margin-top: 30px; letter-spacing: 1px;}
-
-        @media (max-width: 768px) {
-            aside { transform: translateX(-100%); }
-            aside.open { transform: translateX(0); box-shadow: 5px 0 20px rgba(0,0,0,0.5); }
-            main { margin-left: 0; width: 100%; padding: 16px; }
-            .toggle-btn { display: block; }
-        }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
-    <script>
-        if (localStorage.getItem('tp_admin_session') !== 'true') {
-            alert('⚡ Akses Ditolak! Anda harus login sebagai Admin terlebih dahulu.');
-            window.location.href = 'index.html';
-        }
-    </script>
+    <div class="portal-card">
+        <div class="brand-icon">⚡</div>
+        <div class="brand-title">ElectroGlow</div>
+        <div class="brand-subtitle">Pusat Perangkat & Peralatan Elektronik Pintar Premium</div>
 
-    <div id="dashboard-page">
-        <aside id="sidebar">
-            <div>
-                <div class="brand">⚡ Tech Admin</div>
-                <ul class="menu">
-                    <li><a href="#dashboard-section" class="nav-link active">🏠 Menu Utama</a></li>
-                    <li><a href="#laporan-section" class="nav-link">📊 Laporan Keuangan</a></li>
-                    <li><a href="#input-section" class="nav-link">⚡ Input Barang</a></li>
-                    <li><a href="#stok-section" class="nav-link">📦 Kelola Stok</a></li>
-                    <li><a href="#pesanan-section" class="nav-link">🛒 Pesanan Masuk</a></li>
-                </ul>
+        <div class="role-selection">
+            <button class="btn-role" onclick="openUserModal()">
+                <span>🛍️ Masuk Pelanggan</span>
+                <span class="badge-tag">User Mode</span>
+            </button>
+            <button class="btn-role btn-admin-choice" onclick="openAdminModal()">
+                <span>🔒 Dashboard Admin</span>
+                <span class="badge-tag" style="border-color: var(--neon-yellow);">Admin Mode</span>
+            </button>
+        </div>
+
+        <p style="font-size: 0.78rem; color: var(--text-muted);">
+            Sistem Keamanan Terintegrasi &bull; Silakan login sesuai peranan Anda.
+        </p>
+    </div>
+
+    <div class="modal hidden" id="userModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div class="modal-title">🛍️ Login Pelanggan</div>
+                <button class="btn-close" onclick="closeModals()">✕</button>
             </div>
-            <div>
-                <a href="index.html" style="display: block; text-align: center; color: var(--cyan); text-decoration: none; font-size: 0.85rem; margin-bottom: 8px; font-weight: 500;">🌐 Kembali ke Toko Web</a>
-                <div class="btn-logout" id="btnLogout">Keluar (Logout)</div>
+            
+            <div class="hint-box">
+                🔑 <b>Akses Pelanggan:</b><br>
+                Username: <code style="color:#fff;">user</code> | Password: <code style="color:#fff;">user123</code>
             </div>
-        </aside>
 
-        <main>
-            <header>
-                <button class="toggle-btn" id="menuToggle">☰</button>
-                <h2 id="header-title" style="font-size: 1.2rem; color: var(--text-main);">Menu Utama Admin</h2>
-                <span style="font-size: 0.75rem; color: #000; background: var(--accent); padding: 4px 10px; border-radius: 20px; font-weight: bold; box-shadow: 0 0 10px var(--accent-glow);">⚡ Admin Mode</span>
-            </header>
-
-            <section id="dashboard-section" class="content-section">
-                <div class="card-box">
-                    <h3>⚡ Panel Dashboard Sistem</h3>
-                    <p style="color: var(--text-muted); margin-bottom: 20px; font-size: 0.9rem;">
-                        Pantau pergerakan toko, kelola inventaris, dan optimalkan pendapatan Anda secara *real-time*.
-                    </p>
-                    
-                    <div class="stats-grid-2col" style="margin-bottom: 20px;">
-                        <div style="background: var(--bg-main); padding: 16px; border-radius: 8px; border-left: 4px solid var(--accent); box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
-                            <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Total Jenis Barang</span>
-                            <div id="dashTotalBarang" style="font-weight: 900; color: var(--accent); font-size: 1.6rem; margin-top: 4px; text-shadow: 0 0 5px var(--accent-glow);">0</div>
-                        </div>
-                        <div style="background: var(--bg-main); padding: 16px; border-radius: 8px; border-left: 4px solid var(--cyan); box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
-                            <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Total Pesanan Web</span>
-                            <div id="dashTotalPesanan" style="font-weight: 900; color: var(--cyan); font-size: 1.6rem; margin-top: 4px; text-shadow: 0 0 5px rgba(6, 182, 212, 0.5);">0</div>
-                        </div>
-                    </div>
-
-                    <h4 style="color: var(--text-main); margin-bottom: 12px; font-size: 0.9rem; border-left: 2px solid var(--accent); padding-left: 8px;">Akses Fitur Cepat</h4>
-                    <div class="quick-action-grid" style="margin-bottom: 24px;">
-                        <a href="#laporan-section" class="nav-link quick-action-card">
-                            <div style="font-size: 1.5rem;">📊</div>
-                            <div style="font-size: 0.85rem; font-weight: 500;">Laporan Keuangan</div>
-                        </a>
-                        <a href="#input-section" class="nav-link quick-action-card">
-                            <div style="font-size: 1.5rem;">⚡</div>
-                            <div style="font-size: 0.85rem; font-weight: 500;">Input Barang</div>
-                        </a>
-                        <a href="#stok-section" class="nav-link quick-action-card">
-                            <div style="font-size: 1.5rem;">📦</div>
-                            <div style="font-size: 0.85rem; font-weight: 500;">Kelola Stok</div>
-                        </a>
-                        <a href="#pesanan-section" class="nav-link quick-action-card">
-                            <div style="font-size: 1.5rem;">🛒</div>
-                            <div style="font-size: 0.85rem; font-weight: 500;">Pesanan Masuk</div>
-                        </a>
-                    </div>
-
-                    <div class="dashboard-grid-2col" style="margin-bottom: 24px;">
-                        <div style="background: var(--bg-main); padding: 16px; border-radius: 8px; border: 1px solid var(--border);">
-                            <h4 style="font-size: 0.9rem; color: var(--warning); margin-bottom: 12px; display: flex; gap: 6px;"><span style="animation: thunderGlow 1.5s infinite;">⚠️</span> Peringatan Stok Menipis</h4>
-                            <div class="table-container">
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th>Produk</th>
-                                            <th>Stok</th>
-                                            <th>Status</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tabelStokMenipis"></tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                        <div style="background: var(--bg-main); padding: 16px; border-radius: 8px; border: 1px solid var(--border);">
-                            <h4 style="font-size: 0.9rem; color: var(--success); margin-bottom: 12px;">🛒 Pesanan Terbaru</h4>
-                            <div class="table-container">
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th>Nama</th>
-                                            <th>Total</th>
-                                            <th>Metode</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tabelPesananRingkas"></tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="dashboard-grid-2col" style="margin-bottom: 24px;">
-                        <div style="background: var(--bg-main); padding: 16px; border-radius: 8px; border: 1px solid var(--border);">
-                            <h4 style="font-size: 0.9rem; color: var(--cyan); margin-bottom: 12px;">⚡ Produk Paling Diminati</h4>
-                            <div class="table-container">
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th>Produk</th>
-                                            <th>Kategori</th>
-                                            <th>Est. Laris</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tabelTopProduk"></tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                        <div style="background: var(--bg-main); padding: 16px; border-radius: 8px; border: 1px solid var(--border);">
-                            <h4 style="font-size: 0.9rem; color: var(--accent); margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
-                                <span>📜 Log Aktivitas Admin</span>
-                                <button onclick="clearLogs()" style="background:none; border:none; color:var(--danger); cursor:pointer; font-size:0.75rem; text-decoration: underline;">Bersihkan</button>
-                            </h4>
-                            <div class="table-container" style="max-height: 180px; overflow-y: auto;">
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th>Waktu</th>
-                                            <th>Aktivitas</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tabelLogAktivitas"></tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="dashboard-grid-2col" style="margin-bottom: 24px;">
-                        <div style="background: var(--bg-main); padding: 16px; border-radius: 8px; border: 1px solid var(--border);">
-                            <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">💾 Memori Sistem (Lokal)</span>
-                            <div id="storagePercentText" style="font-weight: bold; color: var(--cyan); font-size: 1rem; margin-top: 6px;">0 KB / 5 MB</div>
-                            <div class="progress-bar-bg">
-                                <div id="storageBarFill" class="progress-bar-fill" style="width: 0%;"></div>
-                            </div>
-                        </div>
-                        <div style="background: var(--bg-main); padding: 16px; border-radius: 8px; border: 1px solid var(--border);">
-                            <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">💎 Total Nilai Aset Gudang</span>
-                            <div id="totalNilaiAset" style="font-weight: 900; color: var(--success); font-size: 1.3rem; margin-top: 6px;">Rp 0</div>
-                        </div>
-                    </div>
-
-                    <div class="dashboard-footer">
-                        ⚡ Tech Admin Control Panel v2.0 • Sistem Aktif & Terhubung
-                    </div>
-
+            <form onsubmit="loginUser(event)">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="userUsername" placeholder="Masukkan username" required>
                 </div>
-            </section>
-
-            <section id="laporan-section" class="content-section hidden">
-                <div class="card-box">
-                    <h3>📊 Input Laporan Penghasilan & Pengeluaran</h3>
-                    <form id="formKeuangan" onsubmit="return false;">
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label>Pilih Tanggal</label>
-                                <input type="date" id="lapTanggal" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Pendapatan (Rp)</label>
-                                <input type="number" id="lapPendapatan" placeholder="0" value="0">
-                            </div>
-                            <div class="form-group">
-                                <label>Pengeluaran (Rp)</label>
-                                <input type="number" id="lapPengeluaran" placeholder="0" value="0">
-                            </div>
-                            <div class="form-group">
-                                <label>Keterangan (Opsional)</label>
-                                <input type="text" id="lapKet" placeholder="Cth: Penjualan / Restock">
-                            </div>
-                        </div>
-                        <button type="button" id="btnSimpanKeuangan" class="btn" style="margin-top: 8px;">⚡ Catat Pembukuan</button>
-                    </form>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="userPassword" placeholder="••••••••" required>
                 </div>
+                <button type="submit" class="btn-action">Masuk Belanja ⚡</button>
+            </form>
+        </div>
+    </div>
 
-                <div class="card-box">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid var(--border); padding-bottom: 12px;">
-                        <h3 style="border: none; margin: 0; padding: 0;">📈 Rekap Keuangan Toko</h3>
-                        <button class="btn-reset" id="btnResetLaporan">🗑️ Reset Semua</button>
-                    </div>
+    <div class="modal hidden" id="adminModal">
+        <div class="modal-card" style="border-color: var(--neon-yellow);">
+            <div class="modal-header">
+                <div class="modal-title" style="color: var(--neon-yellow);">🔒 Login Administrator</div>
+                <button class="btn-close" onclick="closeModals()">✕</button>
+            </div>
 
-                    <div class="form-grid" style="margin-bottom: 20px;">
-                        <div style="background: var(--bg-main); padding: 16px; border-radius: 8px; border-bottom: 3px solid var(--success);">
-                            <span style="font-size: 0.85rem; color: var(--text-muted);">Total Pendapatan</span>
-                            <div id="rekapPendapatan" style="font-weight: bold; color: var(--success); font-size: 1.2rem; margin-top: 6px;">Rp 0</div>
-                        </div>
-                        <div style="background: var(--bg-main); padding: 16px; border-radius: 8px; border-bottom: 3px solid var(--danger);">
-                            <span style="font-size: 0.85rem; color: var(--text-muted);">Total Pengeluaran</span>
-                            <div id="rekapPengeluaran" style="font-weight: bold; color: var(--danger); font-size: 1.2rem; margin-top: 6px;">Rp 0</div>
-                        </div>
-                        <div style="background: var(--bg-main); padding: 16px; border-radius: 8px; border-bottom: 3px solid var(--accent); box-shadow: 0 4px 10px rgba(250, 204, 21, 0.1);">
-                            <span style="font-size: 0.85rem; color: var(--text-muted);">Laba Bersih</span>
-                            <div id="rekapLaba" style="font-weight: bold; color: var(--accent); font-size: 1.2rem; margin-top: 6px;">Rp 0</div>
-                        </div>
-                    </div>
+            <div class="hint-box" style="border-color: var(--neon-red); background: rgba(255, 42, 95, 0.08); color: var(--neon-red);">
+                🔐 <b>Akses Pengelola:</b><br>
+                Username: <code style="color:#fff;">admin</code> | Password: <code style="color:#fff;">admin123</code>
+            </div>
 
-                    <div class="table-container">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Tanggal</th>
-                                    <th>Keterangan</th>
-                                    <th>Pendapatan</th>
-                                    <th>Pengeluaran</th>
-                                    <th>Laba / Rugi</th>
-                                    <th>Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tabelKeuangan"></tbody>
-                        </table>
-                    </div>
+            <form onsubmit="loginAdmin(event)">
+                <div class="form-group">
+                    <label>Username Admin</label>
+                    <input type="text" id="adminUsername" placeholder="Masukkan username admin" required>
                 </div>
-            </section>
-
-            <section id="input-section" class="content-section hidden">
-                <div class="card-box">
-                    <h3>⚡ Tambah Produk Baru</h3>
-                    <form id="formInputBarang" onsubmit="return false;">
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label>Kode Barang</label>
-                                <input type="text" id="kodeBarang" placeholder="Cth: KB-01">
-                            </div>
-                            <div class="form-group">
-                                <label>Nama Produk</label>
-                                <input type="text" id="namaBarang" placeholder="Cth: Keychron K2">
-                            </div>
-                            <div class="form-group">
-                                <label>Kategori</label>
-                                <select id="kategoriBarang">
-                                    <optgroup label="Aksesoris & Peripherals">
-                                        <option value="Aksesoris Keyboard">Aksesoris Keyboard</option>
-                                        <option value="Aksesoris Mouse">Aksesoris Mouse</option>
-                                        <option value="Audio">Audio</option>
-                                    </optgroup>
-                                    <optgroup label="Sparepart / Hardware">
-                                        <option value="GPU">GPU</option>
-                                        <option value="CPU">CPU</option>
-                                        <option value="RAM">RAM</option>
-                                    </optgroup>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>Jumlah Stok</label>
-                                <input type="number" id="stokBarang" placeholder="0">
-                            </div>
-                            <div class="form-group">
-                                <label>Harga Jual (Rp)</label>
-                                <input type="number" id="hargaBarang" placeholder="0">
-                            </div>
-                            <div class="form-group">
-                                <label>URL Gambar (Opsional)</label>
-                                <input type="text" id="gambarBarang" placeholder="https://...">
-                            </div>
-                        </div>
-                        <button type="button" id="btnSimpanBarang" class="btn" style="margin-top: 16px;">⚡ Simpan ke Database</button>
-                    </form>
+                <div class="form-group">
+                    <label>Password Admin</label>
+                    <input type="password" id="adminPassword" placeholder="••••••••" required>
                 </div>
-            </section>
-
-            <section id="stok-section" class="content-section hidden">
-                <div class="card-box">
-                    <h3>📦 Daftar Inventaris Stok</h3>
-                    <div class="table-container">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Gambar</th>
-                                    <th>Kode</th>
-                                    <th>Nama Produk</th>
-                                    <th>Kategori</th>
-                                    <th>Stok</th>
-                                    <th>Harga</th>
-                                    <th>Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tabelStok"></tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
-
-            <section id="pesanan-section" class="content-section hidden">
-                <div class="card-box">
-                    <h3>🛒 Daftar Pesanan Masuk (Sistem Web)</h3>
-                    <div class="table-container">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>ID Trx</th>
-                                    <th>Tanggal</th>
-                                    <th>Nama Pembeli</th>
-                                    <th>Produk Dipesan</th>
-                                    <th>Total Bayar</th>
-                                    <th>Metode</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tabelPesanan"></tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
-        </main>
+                <button type="submit" class="btn-action" style="background: linear-gradient(90deg, #d68900, var(--neon-red));">Verifikasi & Masuk ⚡</button>
+            </form>
+        </div>
     </div>
 
     <script>
-        let dataStok = JSON.parse(localStorage.getItem('tp_stok')) || [];
-        let dataPesanan = JSON.parse(localStorage.getItem('tp_pesanan')) || [];
-        let dataKeuangan = JSON.parse(localStorage.getItem('tp_keuangan')) || [];
-        let dataLogs = JSON.parse(localStorage.getItem('tp_logs')) || [];
-
-        const sidebar = document.getElementById('sidebar');
-        document.getElementById('lapTanggal').valueAsDate = new Date();
-
-        const titleMap = {
-            'dashboard-section': '⚡ Menu Utama Admin',
-            'laporan-section': '📊 Laporan Keuangan Toko',
-            'input-section': '⚡ Input Barang Baru',
-            'stok-section': '📦 Kelola Stok Barang',
-            'pesanan-section': '🛒 Daftar Pesanan Masuk'
-        };
-
-        // Fungsi Tambah Log Aktivitas
-        function addLog(activity) {
-            const time = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-            dataLogs.unshift({ time, activity });
-            if(dataLogs.length > 20) dataLogs.pop(); 
-            localStorage.setItem('tp_logs', JSON.stringify(dataLogs));
+        function openUserModal() {
+            closeModals();
+            document.getElementById('userModal').classList.remove('hidden');
         }
 
-        function clearLogs() {
-            if(confirm('⚡ Bersihkan riwayat log aktivitas sistem?')) {
-                dataLogs = [];
-                localStorage.removeItem('tp_logs');
-                renderLogs();
-            }
+        function openAdminModal() {
+            closeModals();
+            document.getElementById('adminModal').classList.remove('hidden');
         }
 
-        document.querySelectorAll('.nav-link').forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                const targetId = link.getAttribute('href').replace('#', '');
-                
-                document.querySelectorAll('.content-section').forEach(s => s.classList.add('hidden'));
-                document.getElementById(targetId).classList.remove('hidden');
-                
-                document.getElementById('header-title').textContent = titleMap[targetId];
-                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-                document.querySelectorAll(`.nav-link[href="#${targetId}"]`).forEach(l => l.classList.add('active'));
-                
-                sidebar.classList.remove('open');
-                if(targetId === 'dashboard-section') updateDashboardElements();
-                if(targetId === 'laporan-section') renderKeuangan();
-            });
-        });
-
-        document.getElementById('menuToggle').addEventListener('click', () => sidebar.classList.toggle('open'));
-
-        document.getElementById('btnLogout').addEventListener('click', () => {
-            localStorage.removeItem('tp_admin_session');
-            window.location.href = 'index.html';
-        });
-
-        function updateDashboardElements() {
-            document.getElementById('dashTotalBarang').textContent = dataStok.length;
-            document.getElementById('dashTotalPesanan').textContent = dataPesanan.length;
-
-            renderRingkasanTables();
-            renderTopProduk();
-            renderLogs();
-            calcStorageAndAssets();
+        function closeModals() {
+            document.getElementById('userModal').classList.add('hidden');
+            document.getElementById('adminModal').classList.add('hidden');
         }
 
-        function renderRingkasanTables() {
-            // Stok Menipis
-            const tbodyStok = document.getElementById('tabelStokMenipis');
-            const stokSedikit = dataStok.filter(item => item.stok <= 5);
-            
-            if (stokSedikit.length === 0) {
-                tbodyStok.innerHTML = '<tr><td colspan="3" style="text-align:center; color: var(--text-muted); font-style: italic;">Sistem Terkendali. Semua stok > 5.</td></tr>';
+        // VERIFIKASI LOGIN USER (username: user | password: user123)
+        function loginUser(event) {
+            event.preventDefault();
+            const u = document.getElementById('userUsername').value.trim();
+            const p = document.getElementById('userPassword').value;
+
+            if (u === 'user' && p === 'user123') {
+                localStorage.setItem('tp_user_session', u);
+                alert('⚡ Login Berhasil! Selamat datang di ElectroGlow.');
+                // Mengarahkan ke file pelanggan (ganti jika nama file beda)
+                window.location.href = 'pelanggan.html';
             } else {
-                tbodyStok.innerHTML = stokSedikit.map(s => `
-                    <tr>
-                        <td>${s.nama}</td>
-                        <td style="color: var(--danger); font-weight: bold; text-shadow: 0 0 5px rgba(239,68,68,0.5);">${s.stok}</td>
-                        <td><span style="color: var(--accent); font-size: 0.75rem; font-weight:bold; background: rgba(250,204,21,0.1); padding: 4px 8px; border-radius: 4px;">⚡ Restok!</span></td>
-                    </tr>
-                `).join('');
+                alert('❌ Username atau Password Pelanggan Salah!\n\nUsername: user\nPassword: user123');
             }
+        }
 
-            // Pesanan Ringkas
-            const tbodyPsn = document.getElementById('tabelPesananRingkas');
-            if (dataPesanan.length === 0) {
-                tbodyPsn.innerHTML = '<tr><td colspan="3" style="text-align:center; color: var(--text-muted); font-style: italic;">Belum ada pesanan masuk.</td></tr>';
+        // VERIFIKASI LOGIN ADMIN (username: admin | password: admin123)
+        function loginAdmin(event) {
+            event.preventDefault();
+            const u = document.getElementById('adminUsername').value.trim();
+            const p = document.getElementById('adminPassword').value;
+
+            if (u === 'admin' && p === 'admin123') {
+                localStorage.setItem('tp_admin_session', 'true');
+                alert('⚡ Login Administrator Berhasil!');
+                window.location.href = 'admin.html';
             } else {
-                tbodyPsn.innerHTML = dataPesanan.slice(-4).reverse().map(p => `
-                    <tr>
-                        <td>${p.nama}</td>
-                        <td style="color: var(--success); font-weight: 500;">Rp ${p.total.toLocaleString('id-ID')}</td>
-                        <td><span style="font-size:0.8rem; background: var(--bg-input); padding: 2px 6px; border-radius: 4px; border: 1px solid var(--border);">${p.metode}</span></td>
-                    </tr>
-                `).join('');
+                alert('❌ Username atau Password Admin Salah!\n\nUsername: admin\nPassword: admin123');
             }
         }
-
-        function renderTopProduk() {
-            const tbodyTop = document.getElementById('tabelTopProduk');
-            if (dataStok.length === 0) {
-                tbodyTop.innerHTML = '<tr><td colspan="3" style="text-align:center; color: var(--text-muted); font-style: italic;">Data barang kosong.</td></tr>';
-                return;
-            }
-
-            let sorted = [...dataStok].slice(0, 5);
-            tbodyTop.innerHTML = sorted.map((item, idx) => `
-                <tr>
-                    <td><b style="color: var(--accent);">#${idx + 1}</b> ${item.nama}</td>
-                    <td><span style="font-size: 0.8rem; color: var(--text-muted);">${item.kategori}</span></td>
-                    <td style="color: var(--cyan); font-weight: bold;">🔥 Tinggi</td>
-                </tr>
-            `).join('');
-        }
-
-        function renderLogs() {
-            const tbodyLog = document.getElementById('tabelLogAktivitas');
-            if(dataLogs.length === 0) {
-                tbodyLog.innerHTML = '<tr><td colspan="2" style="text-align:center; color: var(--text-muted); font-style: italic;">Sistem bersih. Belum ada log.</td></tr>';
-                return;
-            }
-            tbodyLog.innerHTML = dataLogs.map(l => `
-                <tr>
-                    <td style="color: var(--accent); font-size: 0.8rem; font-family: monospace;">[${l.time}]</td>
-                    <td style="font-size: 0.85rem;">${l.activity}</td>
-                </tr>
-            `).join('');
-        }
-
-        function calcStorageAndAssets() {
-            let totalBytes = 0;
-            for(let key in localStorage) {
-                if(localStorage.hasOwnProperty(key)) {
-                    totalBytes += (localStorage[key].length + key.length) * 2;
-                }
-            }
-            let totalKB = (totalBytes / 1024).toFixed(1);
-            let percent = Math.min(((totalKB / 5120) * 100), 100).toFixed(1);
-
-            document.getElementById('storagePercentText').textContent = `${totalKB} KB / 5 MB (${percent}%)`;
-            document.getElementById('storageBarFill').style.width = `${percent}%`;
-
-            let totalNilai = dataStok.reduce((sum, item) => sum + (item.stok * item.harga), 0);
-            document.getElementById('totalNilaiAset').textContent = `Rp ${totalNilai.toLocaleString('id-ID')}`;
-        }
-
-        /* --- STOK BARANG --- */
-        document.getElementById('btnSimpanBarang').addEventListener('click', () => {
-            const kode = document.getElementById('kodeBarang').value;
-            const nama = document.getElementById('namaBarang').value;
-            const stok = document.getElementById('stokBarang').value;
-            const harga = document.getElementById('hargaBarang').value;
-            let gambar = document.getElementById('gambarBarang').value;
-
-            if (!kode || !nama || !stok || !harga) {
-                alert('⚡ Peringatan: Mohon lengkapi semua form wajib!');
-                return;
-            }
-
-            if (!gambar) {
-                gambar = 'https://via.placeholder.com/150/111827/facc15?text=⚡+Tech';
-            }
-
-            const item = {
-                id: Date.now(),
-                kode: kode,
-                nama: nama,
-                kategori: document.getElementById('kategoriBarang').value,
-                stok: parseInt(stok) || 0,
-                harga: parseInt(harga) || 0,
-                gambar: gambar
-            };
-
-            dataStok.push(item);
-            localStorage.setItem('tp_stok', JSON.stringify(dataStok));
-            addLog(`⚡ Input Baru: ${nama} (${stok} unit) ditambahkan.`);
-            renderStok();
-            
-            document.getElementById('kodeBarang').value = '';
-            document.getElementById('namaBarang').value = '';
-            document.getElementById('stokBarang').value = '';
-            document.getElementById('hargaBarang').value = '';
-            document.getElementById('gambarBarang').value = '';
-            
-            alert('⚡ Berhasil! Produk telah ditambahkan ke database.');
-        });
-
-        function renderStok() {
-            const tbody = document.getElementById('tabelStok');
-            updateDashboardElements();
-
-            if (dataStok.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color: var(--text-muted); font-style: italic;">Inventaris kosong. Silakan input produk baru.</td></tr>';
-                return;
-            }
-
-            tbody.innerHTML = dataStok.map((item, index) => `
-                <tr>
-                    <td><img src="${item.gambar}" width="45" height="45" style="object-fit:cover; border-radius:6px; border: 1px solid var(--border);"></td>
-                    <td style="color: var(--cyan); font-family: monospace;">${item.kode}</td>
-                    <td style="font-weight: 500;">${item.nama}</td>
-                    <td><span style="font-size: 0.8rem; background: var(--bg-main); padding: 4px 8px; border-radius: 4px;">${item.kategori}</span></td>
-                    <td style="font-weight: bold; color: ${item.stok <= 5 ? 'var(--danger)' : 'var(--text-main)'};">${item.stok}</td>
-                    <td style="color: var(--success);">Rp ${item.harga.toLocaleString('id-ID')}</td>
-                    <td><button onclick="hapusStok(${index})" class="btn-del">Hapus</button></td>
-                </tr>
-            `).join('');
-        }
-
-        function hapusStok(index) {
-            if (confirm('⚡ Yakin ingin menghapus produk ini dari database secara permanen?')) {
-                const deletedName = dataStok[index].nama;
-                dataStok.splice(index, 1);
-                localStorage.setItem('tp_stok', JSON.stringify(dataStok));
-                addLog(`🗑️ Hapus: Produk ${deletedName} dihapus dari sistem.`);
-                renderStok();
-            }
-        }
-
-        /* --- KEUANGAN MANUAL --- */
-        document.getElementById('btnSimpanKeuangan').addEventListener('click', () => {
-            const tglVal = document.getElementById('lapTanggal').value;
-            const pendapatan = parseInt(document.getElementById('lapPendapatan').value) || 0;
-            const pengeluaran = parseInt(document.getElementById('lapPengeluaran').value) || 0;
-            const ket = document.getElementById('lapKet').value.trim() || 'Tanpa Keterangan';
-
-            if (!tglVal) {
-                alert('⚡ Pilih tanggal transaksi terlebih dahulu!');
-                return;
-            }
-
-            if (pendapatan === 0 && pengeluaran === 0) {
-                alert('⚡ Nominal tidak valid. Masukkan nilai pendapatan atau pengeluaran.');
-                return;
-            }
-
-            const parts = tglVal.split('-');
-            const tglFormatted = `${parts[2]}/${parts[1]}/${parts[0]}`;
-
-            const entry = {
-                id: Date.now(),
-                tanggal: tglFormatted,
-                pendapatan: pendapatan,
-                pengeluaran: pengeluaran,
-                keterangan: ket
-            };
-
-            dataKeuangan.push(entry);
-            localStorage.setItem('tp_keuangan', JSON.stringify(dataKeuangan));
-            addLog(`💸 Transaksi dicatat: +Rp ${pendapatan.toLocaleString('id-ID')} / -Rp ${pengeluaran.toLocaleString('id-ID')}`);
-
-            document.getElementById('lapPendapatan').value = '0';
-            document.getElementById('lapPengeluaran').value = '0';
-            document.getElementById('lapKet').value = '';
-
-            renderKeuangan();
-            updateDashboardElements();
-            alert('⚡ Catatan pembukuan berhasil disimpan ke memori!');
-        });
-
-        function renderKeuangan() {
-            const tbody = document.getElementById('tabelKeuangan');
-            
-            let totPendapatan = 0;
-            let totPengeluaran = 0;
-
-            if (dataKeuangan.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color: var(--text-muted); font-style: italic;">Sistem keuangan bersih. Belum ada catatan.</td></tr>';
-            } else {
-                tbody.innerHTML = dataKeuangan.map((k, index) => {
-                    totPendapatan += k.pendapatan;
-                    totPengeluaran += k.pengeluaran;
-                    const laba = k.pendapatan - k.pengeluaran;
-                    const labaColor = laba >= 0 ? 'var(--accent)' : 'var(--danger)';
-                    const glowEffect = laba >= 0 ? 'text-shadow: 0 0 5px var(--accent-glow);' : '';
-
-                    return `
-                        <tr>
-                            <td style="font-family: monospace; color: var(--text-muted);">${k.tanggal}</td>
-                            <td>${k.keterangan}</td>
-                            <td style="color:var(--success)">Rp ${k.pendapatan.toLocaleString('id-ID')}</td>
-                            <td style="color:var(--danger)">Rp ${k.pengeluaran.toLocaleString('id-ID')}</td>
-                            <td style="color:${labaColor}; font-weight:900; ${glowEffect}">Rp ${laba.toLocaleString('id-ID')}</td>
-                            <td><button onclick="hapusKeuangan(${index})" class="btn-del">Hapus</button></td>
-                        </tr>
-                    `;
-                }).join('');
-            }
-
-            const labaBersihTotal = totPendapatan - totPengeluaran;
-            document.getElementById('rekapPendapatan').textContent = `Rp ${totPendapatan.toLocaleString('id-ID')}`;
-            document.getElementById('rekapPengeluaran').textContent = `Rp ${totPengeluaran.toLocaleString('id-ID')}`;
-            document.getElementById('rekapLaba').textContent = `Rp ${labaBersihTotal.toLocaleString('id-ID')}`;
-        }
-
-        function hapusKeuangan(index) {
-            if (confirm('⚡ Hapus catatan baris ini? Data yang terhapus tidak bisa dikembalikan.')) {
-                dataKeuangan.splice(index, 1);
-                localStorage.setItem('tp_keuangan', JSON.stringify(dataKeuangan));
-                addLog('🗑️ Hapus: Salah satu entri pembukuan dihapus.');
-                renderKeuangan();
-                updateDashboardElements();
-            }
-        }
-
-        document.getElementById('btnResetLaporan').addEventListener('click', () => {
-            if (confirm('⚡ PERINGATAN KRITIS: Anda yakin ingin MERESET SEMUA data keuangan?')) {
-                dataKeuangan = [];
-                localStorage.removeItem('tp_keuangan');
-                addLog('⚠️ RESET SISTEM: Seluruh laporan keuangan dikosongkan.');
-                renderKeuangan();
-                updateDashboardElements();
-                alert('⚡ Sistem Keuangan berhasil di-reset sepenuhnya!');
-            }
-        });
-
-        /* --- PESANAN WEB --- */
-        function renderPesanan() {
-            const tbody = document.getElementById('tabelPesanan');
-            if (dataPesanan.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color: var(--text-muted); font-style: italic;">Tidak ada antrean pesanan di sistem.</td></tr>';
-                return;
-            }
-
-            tbody.innerHTML = dataPesanan.map(p => `
-                <tr>
-                    <td style="color: var(--accent); font-family: monospace;"><b>#${p.id}</b></td>
-                    <td style="font-size: 0.85rem; color: var(--text-muted);">${p.tanggal || '-'}</td>
-                    <td style="font-weight: 500;">${p.nama}</td>
-                    <td style="font-size: 0.85rem;">${p.items}</td>
-                    <td style="color:var(--success); font-weight: bold;">Rp ${p.total.toLocaleString('id-ID')}</td>
-                    <td><span style="font-size: 0.75rem; border: 1px solid var(--border); padding: 4px 8px; border-radius: 4px;">${p.metode}</span></td>
-                </tr>
-            `).join('');
-        }
-
-        // Inisialisasi Pertama
-        if(dataLogs.length === 0) addLog('⚡ Sistem Admin Induk berhasil menyala.');
-        renderStok();
-        renderPesanan();
-        renderKeuangan();
-        updateDashboardElements();
     </script>
 </body>
 </html>
