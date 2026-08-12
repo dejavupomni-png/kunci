@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
@@ -105,7 +105,6 @@
         .modal-card { background: var(--bg-card); border: 1px solid var(--neon-red); border-radius: 12px; padding: 20px; width: 100%; max-width: 450px; max-height: 90vh; overflow-y: auto; box-shadow: 0 0 30px rgba(255, 42, 42, 0.2); }
         .hidden { display: none !important; }
 
-        /* Styling YouTube Thumbnail */
         .youtube-preview-container { 
             display: block; position: relative; width: 100%; cursor: pointer; 
             margin-bottom: 12px; border-radius: 8px; overflow: hidden;
@@ -258,37 +257,28 @@
         function playAddToCartSound() {
             try {
                 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                
                 const bufferSize = audioCtx.sampleRate * 1; 
                 const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
                 const data = buffer.getChannelData(0);
-                for (let i = 0; i < bufferSize; i++) {
-                    data[i] = Math.random() * 2 - 1; 
-                }
-
+                for (let i = 0; i < bufferSize; i++) { data[i] = Math.random() * 2 - 1; }
                 const noiseSource = audioCtx.createBufferSource();
                 noiseSource.buffer = buffer;
-
                 const filter = audioCtx.createBiquadFilter();
                 filter.type = 'lowpass';
                 filter.frequency.setValueAtTime(1500, audioCtx.currentTime);
                 filter.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.8);
-
                 const gainNode = audioCtx.createGain();
                 gainNode.gain.setValueAtTime(0.8, audioCtx.currentTime);
                 gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 1);
-
                 noiseSource.connect(filter);
                 filter.connect(gainNode);
                 gainNode.connect(audioCtx.destination);
-
                 noiseSource.start();
             } catch (e) {
                 console.log("Audio didukung setelah interaksi pengguna.");
             }
         }
 
-        // DATABASE PRODUK DENGAN LINK YOUTUBE BARU
         const defaultElektronik = [
             { id: 1, nama: "Smart TV 4K UHD 55 Inch", kategori: "TV", harga: 5500000, stok: 10, gambar: "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=500&auto=format&fit=crop", video: "https://youtu.be/b3pRJie7OIs?si=RqYNmoJGLgJ4U8Ji" },
             { id: 2, nama: "Soundbar Home Theater 5.1", kategori: "Audio", harga: 2300000, stok: 15, gambar: "https://images.unsplash.com/photo-1545454675-3531b543be5d?w=500&auto=format&fit=crop", video: "https://youtu.be/wS_2YvDqELY?si=_mHWouWJ9dHVS6py" },
@@ -298,11 +288,11 @@
             { id: 6, nama: "Headphone Bluetooth NC", kategori: "Audio", harga: 1450000, stok: 25, gambar: "https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?w=500&auto=format&fit=crop", video: "https://youtu.be/MIYwPwIwfqU?si=fH8oFbQVF0J3158p" }
         ];
 
-        // MENGGUNAKAN KEY BARU "v6" AGAR TIDAK BENTROK DENGAN DATA LAMA
-        let dataStok = JSON.parse(localStorage.getItem('tp_stok_elek_v6'));
+        // MENGGUNAKAN tp_stok AGAR SAMA DENGAN ADMIN
+        let dataStok = JSON.parse(localStorage.getItem('tp_stok'));
         if (!dataStok || dataStok.length === 0) {
             dataStok = defaultElektronik;
-            localStorage.setItem('tp_stok_elek_v6', JSON.stringify(dataStok));
+            localStorage.setItem('tp_stok', JSON.stringify(dataStok));
         }
 
         let cart = [];
@@ -324,7 +314,7 @@
         const productModal = document.getElementById('productModal');
 
         function renderProducts(filter = 'ALL') {
-            dataStok = JSON.parse(localStorage.getItem('tp_stok_elek_v6')) || [];
+            dataStok = JSON.parse(localStorage.getItem('tp_stok')) || [];
             
             let filteredData = dataStok;
             if (filter !== 'ALL') {
@@ -357,10 +347,8 @@
             renderProducts(cat);
         }
 
-        // FUNGSI UNTUK MENGAMBIL ID VIDEO DARI BERBAGAI FORMAT LINK YOUTUBE
         function getYouTubeID(url) {
             if(!url) return null;
-            // Regex ini mampu menangkap format link "youtu.be" dengan parameter "?si="
             const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
             const match = url.match(regExp);
             return (match && match[2].length === 11) ? match[2] : null;
@@ -376,7 +364,6 @@
             currentBuyQty = 1;
             document.getElementById('modalProdTitle').textContent = selectedProduct.nama;
             
-            // PROSES LOGIKA THUMBNAIL YOUTUBE
             const ytID = getYouTubeID(selectedProduct.video);
             const ytLinkElem = document.getElementById('modalYoutubeLink');
             const ytThumbElem = document.getElementById('modalYoutubeThumb');
@@ -494,6 +481,7 @@
         document.getElementById('openCartBtn').addEventListener('click', () => cartModal.classList.remove('hidden'));
         document.getElementById('closeCartBtn').addEventListener('click', () => cartModal.classList.add('hidden'));
 
+        // --- SISTEM CHECKOUT DAN SINKRONISASI KE ADMIN ---
         document.getElementById('btnCheckout').addEventListener('click', () => {
             const name = document.getElementById('custName').value;
             const address = document.getElementById('custAddress').value;
@@ -508,14 +496,57 @@
                 return;
             }
 
+            // PANGGIL SEMUA DATABASE DARI LOCAL STORAGE
+            let dataStokDb = JSON.parse(localStorage.getItem('tp_stok')) || [];
+            let dataPesananDb = JSON.parse(localStorage.getItem('tp_pesanan')) || [];
+            let dataKeuanganDb = JSON.parse(localStorage.getItem('tp_keuangan')) || [];
+            let dataLogsDb = JSON.parse(localStorage.getItem('tp_logs')) || [];
+
+            let totalBelanja = 0;
+            let daftarItemBeli = [];
+
+            // 1. POTONG STOK
             cart.forEach(cartItem => {
-                const itemInStok = dataStok.find(s => s.id === cartItem.id);
+                const itemInStok = dataStokDb.find(s => s.id === cartItem.id);
                 if (itemInStok) {
                     itemInStok.stok -= cartItem.qty;
                 }
+                totalBelanja += (cartItem.harga * cartItem.qty);
+                daftarItemBeli.push(`${cartItem.nama} (${cartItem.qty}x)`);
             });
-            localStorage.setItem('tp_stok_elek_v6', JSON.stringify(dataStok));
+            localStorage.setItem('tp_stok', JSON.stringify(dataStokDb)); // Simpan stok baru
 
+            // 2. KIRIM KE PESANAN MASUK ADMIN
+            const idTransaksi = Math.floor(1000 + Math.random() * 9000);
+            const pesananBaru = {
+                id: idTransaksi,
+                tanggal: new Date().toLocaleDateString('id-ID') + ' ' + new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
+                nama: name,
+                items: daftarItemBeli.join(', '),
+                total: totalBelanja,
+                metode: method
+            };
+            dataPesananDb.push(pesananBaru);
+            localStorage.setItem('tp_pesanan', JSON.stringify(dataPesananDb));
+
+            // 3. TAMBAH KE LAPORAN KEUANGAN ADMIN
+            const dateStr = new Date().toLocaleDateString('en-GB'); // DD/MM/YYYY
+            dataKeuanganDb.push({
+                id: Date.now(),
+                tanggal: dateStr,
+                pendapatan: totalBelanja,
+                pengeluaran: 0,
+                keterangan: `Penjualan Web (#${idTransaksi})`
+            });
+            localStorage.setItem('tp_keuangan', JSON.stringify(dataKeuanganDb));
+
+            // 4. KIRIM LOG AKTIVITAS
+            const timeNow = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+            dataLogsDb.unshift({ time: timeNow, activity: `🛒 PESANAN WEB: ${name} belanja senilai Rp ${totalBelanja.toLocaleString('id-ID')}.` });
+            if(dataLogsDb.length > 20) dataLogsDb.pop();
+            localStorage.setItem('tp_logs', JSON.stringify(dataLogsDb));
+
+            // Selesai Transaksi
             alert(`Pesanan via ${method} berhasil dibuat! Terima kasih ${name}, pesanan Anda sedang diproses.`);
             
             cart = [];
@@ -523,7 +554,7 @@
             document.getElementById('custAddress').value = '';
             cartModal.classList.add('hidden');
             
-            renderProducts();
+            renderProducts(); // Refresh tampilan stok
         });
 
         renderProducts();
