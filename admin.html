@@ -19,7 +19,6 @@
             --danger: #ef4444;
             --success: #10b981;
             --warning: #f59e0b;
-            --purple: #8b5cf6;
             --cyan: #06b6d4;
         }
 
@@ -27,17 +26,10 @@
         body { background-color: var(--bg-main); color: var(--text-main); min-height: 100vh; }
         .hidden { display: none !important; }
 
-        /* Animasi Aksen Petir */
         @keyframes thunderGlow {
             0% { text-shadow: 0 0 5px var(--accent-glow); }
             50% { text-shadow: 0 0 20px var(--accent), 0 0 30px var(--accent); }
             100% { text-shadow: 0 0 5px var(--accent-glow); }
-        }
-        
-        @keyframes flashSuccess {
-            0% { box-shadow: inset 0 0 0px var(--success); }
-            50% { box-shadow: inset 0 0 20px var(--success); }
-            100% { box-shadow: inset 0 0 0px var(--success); }
         }
 
         #dashboard-page { display: flex; min-height: 100vh; }
@@ -148,11 +140,7 @@
             display: flex; flex-direction: column; align-items: center; 
             justify-content: center; gap: 8px; transition: 0.2s;
         }
-        .quick-action-card:hover {
-            border-color: var(--accent);
-            transform: translateY(-3px);
-            box-shadow: 0 4px 12px var(--accent-glow);
-        }
+        .quick-action-card:hover { border-color: var(--accent); transform: translateY(-3px); box-shadow: 0 4px 12px var(--accent-glow); }
 
         .dashboard-grid-2col { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
 
@@ -178,16 +166,6 @@
 </head>
 <body>
 
-    <!-- Baris ini dinonaktifkan sementara agar Anda bisa menguji file HTML ini langsung di komputer Anda -->
-    <!-- 
-    <script>
-        if (localStorage.getItem('tp_admin_session') !== 'true') {
-            alert('⚡ Akses Ditolak! Anda harus login sebagai Admin terlebih dahulu.');
-            window.location.href = 'index.html';
-        }
-    </script>
-    -->
-
     <div id="dashboard-page">
         <aside id="sidebar">
             <div>
@@ -198,9 +176,6 @@
                     <li><a href="#input-section" class="nav-link">⚡ Input Barang</a></li>
                     <li><a href="#stok-section" class="nav-link">📦 Kelola Stok</a></li>
                     <li><a href="#pesanan-section" class="nav-link">🛒 Pesanan Masuk</a></li>
-                    
-                    <!-- Tombol Simulasi Pembelian Web (Bisa dihapus jika sudah diintegrasi ke index.html) -->
-                    <li style="margin-top: 20px;"><a href="#" id="btnSimulasiWeb" class="nav-link" style="color: var(--success); font-weight: bold; border-left: 3px solid var(--success); background: rgba(16, 185, 129, 0.1);">🛒 Simulasi Web Beli</a></li>
                 </ul>
             </div>
             <div>
@@ -219,9 +194,6 @@
             <section id="dashboard-section" class="content-section">
                 <div class="card-box">
                     <h3>⚡ Panel Dashboard Sistem</h3>
-                    <p style="color: var(--text-muted); margin-bottom: 20px; font-size: 0.9rem;">
-                        Pantau pergerakan toko, kelola inventaris, dan optimalkan pendapatan Anda secara *real-time*.
-                    </p>
                     
                     <div class="stats-grid-2col" style="margin-bottom: 20px;">
                         <div style="background: var(--bg-main); padding: 16px; border-radius: 8px; border-left: 4px solid var(--accent); box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
@@ -256,7 +228,7 @@
 
                     <div class="dashboard-grid-2col" style="margin-bottom: 24px;">
                         <div style="background: var(--bg-main); padding: 16px; border-radius: 8px; border: 1px solid var(--border);">
-                            <h4 style="font-size: 0.9rem; color: var(--warning); margin-bottom: 12px; display: flex; gap: 6px;"><span style="animation: thunderGlow 1.5s infinite;">⚠️</span> Peringatan Stok Menipis</h4>
+                            <h4 style="font-size: 0.9rem; color: var(--warning); margin-bottom: 12px;">⚠️ Peringatan Stok Menipis</h4>
                             <div class="table-container">
                                 <table>
                                     <thead>
@@ -338,15 +310,10 @@
                         </div>
                     </div>
 
-                    <div class="dashboard-footer">
-                        ⚡ Tech Admin Control Panel v2.0 • Sistem Aktif & Terhubung
-                    </div>
-
                 </div>
             </section>
 
             <section id="laporan-section" class="content-section hidden">
-                <!-- Bagian form keuangan tetap sama -->
                 <div class="card-box">
                     <h3>📊 Input Laporan Penghasilan & Pengeluaran</h3>
                     <form id="formKeuangan" onsubmit="return false;">
@@ -427,15 +394,12 @@
                             <div class="form-group">
                                 <label>Kategori</label>
                                 <select id="kategoriBarang">
-                                    <optgroup label="Aksesoris & Peripherals">
-                                        <option value="Aksesoris Keyboard">Aksesoris Keyboard</option>
-                                        <option value="Aksesoris Mouse">Aksesoris Mouse</option>
+                                    <optgroup label="Elektronik">
+                                        <option value="TV">TV</option>
                                         <option value="Audio">Audio</option>
-                                    </optgroup>
-                                    <optgroup label="Sparepart / Hardware">
-                                        <option value="GPU">GPU</option>
-                                        <option value="CPU">CPU</option>
-                                        <option value="RAM">RAM</option>
+                                        <option value="Kamera">Kamera</option>
+                                        <option value="Gaming">Gaming</option>
+                                        <option value="Peralatan">Peralatan Rumah</option>
                                     </optgroup>
                                 </select>
                             </div>
@@ -503,7 +467,7 @@
     </div>
 
     <script>
-        // Memuat data dari Local Storage
+        // KUNCI HARUS 'tp_stok' AGAR SAMA DENGAN INDEX.HTML
         let dataStok = JSON.parse(localStorage.getItem('tp_stok')) || [];
         let dataPesanan = JSON.parse(localStorage.getItem('tp_pesanan')) || [];
         let dataKeuangan = JSON.parse(localStorage.getItem('tp_keuangan')) || [];
@@ -520,7 +484,6 @@
             'pesanan-section': '🛒 Daftar Pesanan Masuk'
         };
 
-        // --- FUNGSI LOG AKTIVITAS ---
         function addLog(activity) {
             const time = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
             dataLogs.unshift({ time, activity });
@@ -536,11 +499,8 @@
             }
         }
 
-        // --- NAVIGASI MENU ---
         document.querySelectorAll('.nav-link').forEach(link => {
             link.addEventListener('click', (e) => {
-                if(link.id === 'btnSimulasiWeb') return; // Skip untuk tombol simulasi
-
                 e.preventDefault();
                 const targetId = link.getAttribute('href').replace('#', '');
                 
@@ -550,7 +510,6 @@
                 document.getElementById('header-title').textContent = titleMap[targetId];
                 document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
                 
-                // Active class khusus untuk menu normal
                 document.querySelectorAll(`.nav-link[href="#${targetId}"]`).forEach(l => l.classList.add('active'));
                 
                 sidebar.classList.remove('open');
@@ -563,10 +522,9 @@
 
         document.getElementById('btnLogout').addEventListener('click', () => {
             localStorage.removeItem('tp_admin_session');
-            window.location.href = 'index.html'; // Akan error kalau file index.html belum ada
+            window.location.href = 'index.html'; 
         });
 
-        // --- FUNGSI UPDATE DASHBOARD ---
         function updateDashboardElements() {
             document.getElementById('dashTotalBarang').textContent = dataStok.length;
             document.getElementById('dashTotalPesanan').textContent = dataPesanan.length;
@@ -578,7 +536,6 @@
         }
 
         function renderRingkasanTables() {
-            // Stok Menipis
             const tbodyStok = document.getElementById('tabelStokMenipis');
             const stokSedikit = dataStok.map((item, index) => ({ item, index })).filter(obj => obj.item.stok <= 5);
             
@@ -594,7 +551,6 @@
                 `).join('');
             }
 
-            // Pesanan Ringkas
             const tbodyPsn = document.getElementById('tabelPesananRingkas');
             if (dataPesanan.length === 0) {
                 tbodyPsn.innerHTML = '<tr><td colspan="3" style="text-align:center; color: var(--text-muted); font-style: italic;">Belum ada pesanan masuk.</td></tr>';
@@ -657,7 +613,6 @@
             document.getElementById('totalNilaiAset').textContent = `Rp ${totalNilai.toLocaleString('id-ID')}`;
         }
 
-        // --- MANAJEMEN STOK ---
         document.getElementById('btnSimpanBarang').addEventListener('click', () => {
             const kode = document.getElementById('kodeBarang').value;
             const nama = document.getElementById('namaBarang').value;
@@ -679,7 +634,8 @@
                 kategori: document.getElementById('kategoriBarang').value,
                 stok: parseInt(stok) || 0,
                 harga: parseInt(harga) || 0,
-                gambar: gambar
+                gambar: gambar,
+                video: ""
             };
 
             dataStok.push(item);
@@ -696,7 +652,6 @@
             alert('⚡ Berhasil! Produk telah ditambahkan ke database.');
         });
 
-        // FITUR BARU: RESTOK CEPAT
         function restokProduk(index) {
             const tambahStok = prompt(`⚡ Berapa jumlah stok yang ingin ditambahkan untuk "${dataStok[index].nama}"?`, "10");
             if (tambahStok !== null) {
@@ -728,7 +683,7 @@
             tbody.innerHTML = dataStok.map((item, index) => `
                 <tr>
                     <td><img src="${item.gambar}" width="45" height="45" style="object-fit:cover; border-radius:6px; border: 1px solid var(--border);"></td>
-                    <td style="color: var(--cyan); font-family: monospace;">${item.kode}</td>
+                    <td style="color: var(--cyan); font-family: monospace;">${item.kode || '-'}</td>
                     <td style="font-weight: 500;">${item.nama}</td>
                     <td><span style="font-size: 0.8rem; background: var(--bg-main); padding: 4px 8px; border-radius: 4px;">${item.kategori}</span></td>
                     <td style="font-weight: bold; color: ${item.stok <= 5 ? 'var(--danger)' : 'var(--text-main)'};">${item.stok}</td>
@@ -751,7 +706,6 @@
             }
         }
 
-        // --- MANAJEMEN KEUANGAN ---
         document.getElementById('btnSimpanKeuangan').addEventListener('click', () => {
             const tglVal = document.getElementById('lapTanggal').value;
             const pendapatan = parseInt(document.getElementById('lapPendapatan').value) || 0;
@@ -829,72 +783,6 @@
             }
         });
 
-        // --- FITUR BARU: SIMULASI PEMBELIAN WEB ---
-        document.getElementById('btnSimulasiWeb').addEventListener('click', (e) => {
-            e.preventDefault();
-            
-            if(dataStok.length === 0) {
-                alert('⚡ Gagal! Tidak ada produk di database. Silakan Input Barang terlebih dahulu agar user bisa membeli.');
-                return;
-            }
-
-            // Ambil 1 produk secara acak untuk disimulasikan dibeli
-            const randomItemIndex = Math.floor(Math.random() * dataStok.length);
-            const produkDibeli = dataStok[randomItemIndex];
-
-            if(produkDibeli.stok <= 0) {
-                alert(`⚡ Simulasi gagal! Stok "${produkDibeli.nama}" habis. Silakan restok dulu.`);
-                return;
-            }
-
-            const jumlahBeli = 1; // Anggap user beli 1 pcs
-            const totalBayar = produkDibeli.harga * jumlahBeli;
-            const namaPembeli = "Guest_" + Math.floor(Math.random() * 999);
-
-            // 1. Catat ke Pesanan Masuk
-            const pesananBaru = {
-                id: Math.floor(1000 + Math.random() * 9000),
-                tanggal: new Date().toLocaleDateString('id-ID') + ' ' + new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
-                nama: namaPembeli,
-                items: `${produkDibeli.nama} (${jumlahBeli}x)`,
-                total: totalBayar,
-                metode: 'Transfer Bank'
-            };
-            dataPesanan.push(pesananBaru);
-            localStorage.setItem('tp_pesanan', JSON.stringify(dataPesanan));
-
-            // 2. Kurangi Stok
-            dataStok[randomItemIndex].stok -= jumlahBeli;
-            localStorage.setItem('tp_stok', JSON.stringify(dataStok));
-
-            // 3. Tambah Otomatis ke Laporan Keuangan
-            const dateStr = new Date().toLocaleDateString('en-GB'); // format DD/MM/YYYY
-            dataKeuangan.push({
-                id: Date.now(),
-                tanggal: dateStr,
-                pendapatan: totalBayar,
-                pengeluaran: 0,
-                keterangan: `Penjualan Web (#${pesananBaru.id})`
-            });
-            localStorage.setItem('tp_keuangan', JSON.stringify(dataKeuangan));
-
-            // 4. Catat ke Log & Render ulang
-            addLog(`🛒 PESANAN BARU: ${namaPembeli} membeli ${produkDibeli.nama}. Stok otomatis berkurang.`);
-            
-            renderPesanan();
-            renderStok();
-            renderKeuangan();
-            updateDashboardElements();
-
-            // Animasi Flash Success di Header
-            const header = document.getElementById('main-header');
-            header.style.animation = 'flashSuccess 1s ease-out';
-            setTimeout(() => header.style.animation = '', 1000);
-
-            alert(`✅ SIMULASI BERHASIL!\n\nPembeli: ${namaPembeli}\nMembeli: ${produkDibeli.nama}\nStok otomatis dikurangi & Keuangan ditambahkan.`);
-        });
-
-        // --- MANAJEMEN PESANAN ---
         function renderPesanan() {
             const tbody = document.getElementById('tabelPesanan');
             if (dataPesanan.length === 0) {
@@ -902,7 +790,6 @@
                 return;
             }
 
-            // Dibalik agar pesanan terbaru ada di atas
             tbody.innerHTML = [...dataPesanan].reverse().map(p => `
                 <tr>
                     <td style="color: var(--accent); font-family: monospace;"><b>#${p.id}</b></td>
@@ -915,7 +802,6 @@
             `).join('');
         }
 
-        // Inisialisasi Pertama
         if(dataLogs.length === 0) addLog('⚡ Sistem Admin Induk berhasil menyala.');
         renderStok();
         renderPesanan();
