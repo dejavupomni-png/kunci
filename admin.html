@@ -7,12 +7,12 @@
     <style>
         :root {
             /* Tema Gelap dengan Aksen Elektrik */
-            --bg-main: #090e17; /* Lebih gelap dari sebelumnya */
+            --bg-main: #090e17; 
             --bg-card: #121b29;
             --bg-input: #1e293b;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
-            --accent: #facc15; /* Kuning Petir / Electric Yellow */
+            --accent: #facc15; 
             --accent-hover: #eab308;
             --accent-glow: rgba(250, 204, 21, 0.5);
             --border: #334155;
@@ -32,6 +32,12 @@
             0% { text-shadow: 0 0 5px var(--accent-glow); }
             50% { text-shadow: 0 0 20px var(--accent), 0 0 30px var(--accent); }
             100% { text-shadow: 0 0 5px var(--accent-glow); }
+        }
+        
+        @keyframes flashSuccess {
+            0% { box-shadow: inset 0 0 0px var(--success); }
+            50% { box-shadow: inset 0 0 20px var(--success); }
+            100% { box-shadow: inset 0 0 0px var(--success); }
         }
 
         #dashboard-page { display: flex; min-height: 100vh; }
@@ -77,6 +83,7 @@
             border-radius: 8px; margin-bottom: 20px; 
             border-bottom: 2px solid var(--accent);
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: 0.3s;
         }
         
         .toggle-btn { display: none; background: none; border: none; color: var(--accent); font-size: 1.5rem; cursor: pointer; }
@@ -120,6 +127,9 @@
         
         .btn-del { background: var(--danger); color: #fff; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; font-weight: bold; }
         .btn-del:hover { background: #dc2626; box-shadow: 0 0 8px rgba(239,68,68,0.5); }
+
+        .btn-restok { background: var(--success); color: #fff; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; font-weight: bold; margin-right: 4px;}
+        .btn-restok:hover { background: #059669; box-shadow: 0 0 8px rgba(16, 185, 129, 0.5); }
         
         .btn-reset { background: transparent; border: 1px solid var(--danger); color: var(--danger); padding: 8px 14px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-weight: bold; }
         .btn-reset:hover { background: var(--danger); color: white; box-shadow: 0 0 10px rgba(239,68,68,0.4); }
@@ -156,7 +166,6 @@
         .progress-bar-bg { width: 100%; background: var(--bg-input); height: 10px; border-radius: 5px; overflow: hidden; margin-top: 8px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.5); }
         .progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--cyan), var(--accent)); transition: width 0.3s; box-shadow: 0 0 10px var(--accent-glow); }
 
-        /* Footer Dashboard */
         .dashboard-footer { text-align: center; font-size: 0.8rem; color: var(--text-muted); padding: 20px 0; border-top: 1px solid var(--border); margin-top: 30px; letter-spacing: 1px;}
 
         @media (max-width: 768px) {
@@ -169,12 +178,15 @@
 </head>
 <body>
 
+    <!-- Baris ini dinonaktifkan sementara agar Anda bisa menguji file HTML ini langsung di komputer Anda -->
+    <!-- 
     <script>
         if (localStorage.getItem('tp_admin_session') !== 'true') {
             alert('⚡ Akses Ditolak! Anda harus login sebagai Admin terlebih dahulu.');
             window.location.href = 'index.html';
         }
     </script>
+    -->
 
     <div id="dashboard-page">
         <aside id="sidebar">
@@ -186,6 +198,9 @@
                     <li><a href="#input-section" class="nav-link">⚡ Input Barang</a></li>
                     <li><a href="#stok-section" class="nav-link">📦 Kelola Stok</a></li>
                     <li><a href="#pesanan-section" class="nav-link">🛒 Pesanan Masuk</a></li>
+                    
+                    <!-- Tombol Simulasi Pembelian Web (Bisa dihapus jika sudah diintegrasi ke index.html) -->
+                    <li style="margin-top: 20px;"><a href="#" id="btnSimulasiWeb" class="nav-link" style="color: var(--success); font-weight: bold; border-left: 3px solid var(--success); background: rgba(16, 185, 129, 0.1);">🛒 Simulasi Web Beli</a></li>
                 </ul>
             </div>
             <div>
@@ -195,7 +210,7 @@
         </aside>
 
         <main>
-            <header>
+            <header id="main-header">
                 <button class="toggle-btn" id="menuToggle">☰</button>
                 <h2 id="header-title" style="font-size: 1.2rem; color: var(--text-main);">Menu Utama Admin</h2>
                 <span style="font-size: 0.75rem; color: #000; background: var(--accent); padding: 4px 10px; border-radius: 20px; font-weight: bold; box-shadow: 0 0 10px var(--accent-glow);">⚡ Admin Mode</span>
@@ -248,7 +263,7 @@
                                         <tr>
                                             <th>Produk</th>
                                             <th>Stok</th>
-                                            <th>Status</th>
+                                            <th>Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tabelStokMenipis"></tbody>
@@ -331,6 +346,7 @@
             </section>
 
             <section id="laporan-section" class="content-section hidden">
+                <!-- Bagian form keuangan tetap sama -->
                 <div class="card-box">
                     <h3>📊 Input Laporan Penghasilan & Pengeluaran</h3>
                     <form id="formKeuangan" onsubmit="return false;">
@@ -487,6 +503,7 @@
     </div>
 
     <script>
+        // Memuat data dari Local Storage
         let dataStok = JSON.parse(localStorage.getItem('tp_stok')) || [];
         let dataPesanan = JSON.parse(localStorage.getItem('tp_pesanan')) || [];
         let dataKeuangan = JSON.parse(localStorage.getItem('tp_keuangan')) || [];
@@ -503,7 +520,7 @@
             'pesanan-section': '🛒 Daftar Pesanan Masuk'
         };
 
-        // Fungsi Tambah Log Aktivitas
+        // --- FUNGSI LOG AKTIVITAS ---
         function addLog(activity) {
             const time = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
             dataLogs.unshift({ time, activity });
@@ -519,8 +536,11 @@
             }
         }
 
+        // --- NAVIGASI MENU ---
         document.querySelectorAll('.nav-link').forEach(link => {
             link.addEventListener('click', (e) => {
+                if(link.id === 'btnSimulasiWeb') return; // Skip untuk tombol simulasi
+
                 e.preventDefault();
                 const targetId = link.getAttribute('href').replace('#', '');
                 
@@ -529,6 +549,8 @@
                 
                 document.getElementById('header-title').textContent = titleMap[targetId];
                 document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                
+                // Active class khusus untuk menu normal
                 document.querySelectorAll(`.nav-link[href="#${targetId}"]`).forEach(l => l.classList.add('active'));
                 
                 sidebar.classList.remove('open');
@@ -541,9 +563,10 @@
 
         document.getElementById('btnLogout').addEventListener('click', () => {
             localStorage.removeItem('tp_admin_session');
-            window.location.href = 'index.html';
+            window.location.href = 'index.html'; // Akan error kalau file index.html belum ada
         });
 
+        // --- FUNGSI UPDATE DASHBOARD ---
         function updateDashboardElements() {
             document.getElementById('dashTotalBarang').textContent = dataStok.length;
             document.getElementById('dashTotalPesanan').textContent = dataPesanan.length;
@@ -557,16 +580,16 @@
         function renderRingkasanTables() {
             // Stok Menipis
             const tbodyStok = document.getElementById('tabelStokMenipis');
-            const stokSedikit = dataStok.filter(item => item.stok <= 5);
+            const stokSedikit = dataStok.map((item, index) => ({ item, index })).filter(obj => obj.item.stok <= 5);
             
             if (stokSedikit.length === 0) {
                 tbodyStok.innerHTML = '<tr><td colspan="3" style="text-align:center; color: var(--text-muted); font-style: italic;">Sistem Terkendali. Semua stok > 5.</td></tr>';
             } else {
                 tbodyStok.innerHTML = stokSedikit.map(s => `
                     <tr>
-                        <td>${s.nama}</td>
-                        <td style="color: var(--danger); font-weight: bold; text-shadow: 0 0 5px rgba(239,68,68,0.5);">${s.stok}</td>
-                        <td><span style="color: var(--accent); font-size: 0.75rem; font-weight:bold; background: rgba(250,204,21,0.1); padding: 4px 8px; border-radius: 4px;">⚡ Restok!</span></td>
+                        <td>${s.item.nama}</td>
+                        <td style="color: var(--danger); font-weight: bold; text-shadow: 0 0 5px rgba(239,68,68,0.5);">${s.item.stok}</td>
+                        <td><button onclick="restokProduk(${s.index})" class="btn-restok">⚡ Restok</button></td>
                     </tr>
                 `).join('');
             }
@@ -634,7 +657,7 @@
             document.getElementById('totalNilaiAset').textContent = `Rp ${totalNilai.toLocaleString('id-ID')}`;
         }
 
-        /* --- STOK BARANG --- */
+        // --- MANAJEMEN STOK ---
         document.getElementById('btnSimpanBarang').addEventListener('click', () => {
             const kode = document.getElementById('kodeBarang').value;
             const nama = document.getElementById('namaBarang').value;
@@ -647,9 +670,7 @@
                 return;
             }
 
-            if (!gambar) {
-                gambar = 'https://via.placeholder.com/150/111827/facc15?text=⚡+Tech';
-            }
+            if (!gambar) gambar = 'https://via.placeholder.com/150/111827/facc15?text=⚡+Tech';
 
             const item = {
                 id: Date.now(),
@@ -675,6 +696,26 @@
             alert('⚡ Berhasil! Produk telah ditambahkan ke database.');
         });
 
+        // FITUR BARU: RESTOK CEPAT
+        function restokProduk(index) {
+            const tambahStok = prompt(`⚡ Berapa jumlah stok yang ingin ditambahkan untuk "${dataStok[index].nama}"?`, "10");
+            if (tambahStok !== null) {
+                const jumlah = parseInt(tambahStok);
+                if (!isNaN(jumlah) && jumlah > 0) {
+                    dataStok[index].stok += jumlah;
+                    localStorage.setItem('tp_stok', JSON.stringify(dataStok));
+                    addLog(`📦 Restok: Tambah ${jumlah} unit untuk ${dataStok[index].nama}.`);
+                    
+                    renderStok();
+                    updateDashboardElements();
+                    
+                    alert(`⚡ Berhasil! Stok "${dataStok[index].nama}" kini menjadi ${dataStok[index].stok} unit.`);
+                } else {
+                    alert('⚡ Jumlah stok tidak valid!');
+                }
+            }
+        }
+
         function renderStok() {
             const tbody = document.getElementById('tabelStok');
             updateDashboardElements();
@@ -692,7 +733,10 @@
                     <td><span style="font-size: 0.8rem; background: var(--bg-main); padding: 4px 8px; border-radius: 4px;">${item.kategori}</span></td>
                     <td style="font-weight: bold; color: ${item.stok <= 5 ? 'var(--danger)' : 'var(--text-main)'};">${item.stok}</td>
                     <td style="color: var(--success);">Rp ${item.harga.toLocaleString('id-ID')}</td>
-                    <td><button onclick="hapusStok(${index})" class="btn-del">Hapus</button></td>
+                    <td>
+                        <button onclick="restokProduk(${index})" class="btn-restok">Restok</button>
+                        <button onclick="hapusStok(${index})" class="btn-del">Hapus</button>
+                    </td>
                 </tr>
             `).join('');
         }
@@ -707,37 +751,22 @@
             }
         }
 
-        /* --- KEUANGAN MANUAL --- */
+        // --- MANAJEMEN KEUANGAN ---
         document.getElementById('btnSimpanKeuangan').addEventListener('click', () => {
             const tglVal = document.getElementById('lapTanggal').value;
             const pendapatan = parseInt(document.getElementById('lapPendapatan').value) || 0;
             const pengeluaran = parseInt(document.getElementById('lapPengeluaran').value) || 0;
             const ket = document.getElementById('lapKet').value.trim() || 'Tanpa Keterangan';
 
-            if (!tglVal) {
-                alert('⚡ Pilih tanggal transaksi terlebih dahulu!');
-                return;
-            }
-
-            if (pendapatan === 0 && pengeluaran === 0) {
-                alert('⚡ Nominal tidak valid. Masukkan nilai pendapatan atau pengeluaran.');
-                return;
-            }
+            if (!tglVal) return alert('⚡ Pilih tanggal transaksi terlebih dahulu!');
+            if (pendapatan === 0 && pengeluaran === 0) return alert('⚡ Nominal tidak valid.');
 
             const parts = tglVal.split('-');
-            const tglFormatted = `${parts[2]}/${parts[1]}/${parts[0]}`;
-
-            const entry = {
-                id: Date.now(),
-                tanggal: tglFormatted,
-                pendapatan: pendapatan,
-                pengeluaran: pengeluaran,
-                keterangan: ket
-            };
+            const entry = { id: Date.now(), tanggal: `${parts[2]}/${parts[1]}/${parts[0]}`, pendapatan, pengeluaran, keterangan: ket };
 
             dataKeuangan.push(entry);
             localStorage.setItem('tp_keuangan', JSON.stringify(dataKeuangan));
-            addLog(`💸 Transaksi dicatat: +Rp ${pendapatan.toLocaleString('id-ID')} / -Rp ${pengeluaran.toLocaleString('id-ID')}`);
+            addLog(`💸 Keuangan manual: +Rp ${pendapatan.toLocaleString('id-ID')} / -Rp ${pengeluaran.toLocaleString('id-ID')}`);
 
             document.getElementById('lapPendapatan').value = '0';
             document.getElementById('lapPengeluaran').value = '0';
@@ -750,9 +779,7 @@
 
         function renderKeuangan() {
             const tbody = document.getElementById('tabelKeuangan');
-            
-            let totPendapatan = 0;
-            let totPengeluaran = 0;
+            let totPendapatan = 0, totPengeluaran = 0;
 
             if (dataKeuangan.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color: var(--text-muted); font-style: italic;">Sistem keuangan bersih. Belum ada catatan.</td></tr>';
@@ -777,14 +804,13 @@
                 }).join('');
             }
 
-            const labaBersihTotal = totPendapatan - totPengeluaran;
             document.getElementById('rekapPendapatan').textContent = `Rp ${totPendapatan.toLocaleString('id-ID')}`;
             document.getElementById('rekapPengeluaran').textContent = `Rp ${totPengeluaran.toLocaleString('id-ID')}`;
-            document.getElementById('rekapLaba').textContent = `Rp ${labaBersihTotal.toLocaleString('id-ID')}`;
+            document.getElementById('rekapLaba').textContent = `Rp ${(totPendapatan - totPengeluaran).toLocaleString('id-ID')}`;
         }
 
         function hapusKeuangan(index) {
-            if (confirm('⚡ Hapus catatan baris ini? Data yang terhapus tidak bisa dikembalikan.')) {
+            if (confirm('⚡ Hapus catatan baris ini?')) {
                 dataKeuangan.splice(index, 1);
                 localStorage.setItem('tp_keuangan', JSON.stringify(dataKeuangan));
                 addLog('🗑️ Hapus: Salah satu entri pembukuan dihapus.');
@@ -800,11 +826,75 @@
                 addLog('⚠️ RESET SISTEM: Seluruh laporan keuangan dikosongkan.');
                 renderKeuangan();
                 updateDashboardElements();
-                alert('⚡ Sistem Keuangan berhasil di-reset sepenuhnya!');
             }
         });
 
-        /* --- PESANAN WEB --- */
+        // --- FITUR BARU: SIMULASI PEMBELIAN WEB ---
+        document.getElementById('btnSimulasiWeb').addEventListener('click', (e) => {
+            e.preventDefault();
+            
+            if(dataStok.length === 0) {
+                alert('⚡ Gagal! Tidak ada produk di database. Silakan Input Barang terlebih dahulu agar user bisa membeli.');
+                return;
+            }
+
+            // Ambil 1 produk secara acak untuk disimulasikan dibeli
+            const randomItemIndex = Math.floor(Math.random() * dataStok.length);
+            const produkDibeli = dataStok[randomItemIndex];
+
+            if(produkDibeli.stok <= 0) {
+                alert(`⚡ Simulasi gagal! Stok "${produkDibeli.nama}" habis. Silakan restok dulu.`);
+                return;
+            }
+
+            const jumlahBeli = 1; // Anggap user beli 1 pcs
+            const totalBayar = produkDibeli.harga * jumlahBeli;
+            const namaPembeli = "Guest_" + Math.floor(Math.random() * 999);
+
+            // 1. Catat ke Pesanan Masuk
+            const pesananBaru = {
+                id: Math.floor(1000 + Math.random() * 9000),
+                tanggal: new Date().toLocaleDateString('id-ID') + ' ' + new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
+                nama: namaPembeli,
+                items: `${produkDibeli.nama} (${jumlahBeli}x)`,
+                total: totalBayar,
+                metode: 'Transfer Bank'
+            };
+            dataPesanan.push(pesananBaru);
+            localStorage.setItem('tp_pesanan', JSON.stringify(dataPesanan));
+
+            // 2. Kurangi Stok
+            dataStok[randomItemIndex].stok -= jumlahBeli;
+            localStorage.setItem('tp_stok', JSON.stringify(dataStok));
+
+            // 3. Tambah Otomatis ke Laporan Keuangan
+            const dateStr = new Date().toLocaleDateString('en-GB'); // format DD/MM/YYYY
+            dataKeuangan.push({
+                id: Date.now(),
+                tanggal: dateStr,
+                pendapatan: totalBayar,
+                pengeluaran: 0,
+                keterangan: `Penjualan Web (#${pesananBaru.id})`
+            });
+            localStorage.setItem('tp_keuangan', JSON.stringify(dataKeuangan));
+
+            // 4. Catat ke Log & Render ulang
+            addLog(`🛒 PESANAN BARU: ${namaPembeli} membeli ${produkDibeli.nama}. Stok otomatis berkurang.`);
+            
+            renderPesanan();
+            renderStok();
+            renderKeuangan();
+            updateDashboardElements();
+
+            // Animasi Flash Success di Header
+            const header = document.getElementById('main-header');
+            header.style.animation = 'flashSuccess 1s ease-out';
+            setTimeout(() => header.style.animation = '', 1000);
+
+            alert(`✅ SIMULASI BERHASIL!\n\nPembeli: ${namaPembeli}\nMembeli: ${produkDibeli.nama}\nStok otomatis dikurangi & Keuangan ditambahkan.`);
+        });
+
+        // --- MANAJEMEN PESANAN ---
         function renderPesanan() {
             const tbody = document.getElementById('tabelPesanan');
             if (dataPesanan.length === 0) {
@@ -812,7 +902,8 @@
                 return;
             }
 
-            tbody.innerHTML = dataPesanan.map(p => `
+            // Dibalik agar pesanan terbaru ada di atas
+            tbody.innerHTML = [...dataPesanan].reverse().map(p => `
                 <tr>
                     <td style="color: var(--accent); font-family: monospace;"><b>#${p.id}</b></td>
                     <td style="font-size: 0.85rem; color: var(--text-muted);">${p.tanggal || '-'}</td>
