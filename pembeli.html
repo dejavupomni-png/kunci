@@ -16,6 +16,7 @@
             --border-color: rgba(255, 42, 42, 0.4);
             --danger: #ef4444;
             --success: #22c55e;
+            --info: #3b82f6;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
@@ -42,10 +43,12 @@
             border-bottom: 1px solid var(--border-color);
             padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            flex-wrap: wrap;
+            gap: 10px;
         }
         .logo { font-size: 1.2rem; font-weight: bold; color: var(--neon-yellow); text-decoration: none; text-shadow: 0 0 8px rgba(255, 204, 0, 0.5); }
         
-        .user-nav { display: flex; align-items: center; gap: 8px; }
+        .user-nav { display: flex; align-items: center; gap: 8px; flex-wrap: wrap;}
         .user-tag { font-size: 0.75rem; color: var(--text-muted); background: var(--bg-input); padding: 4px 8px; border-radius: 12px; border: 1px solid var(--border-color); }
         .btn-logout { background: transparent; border: 1px dashed var(--neon-red); color: var(--neon-red); padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; cursor: pointer; transition: 0.3s; }
         .btn-logout:hover { background: rgba(255, 42, 42, 0.1); text-shadow: 0 0 5px var(--neon-red); }
@@ -140,6 +143,12 @@
         .btn-close:hover { color: var(--neon-red); text-shadow: 0 0 8px var(--neon-red); }
         .btn-cancel { background: transparent; border: 1px dashed var(--border-color); color: var(--text-muted); padding: 8px; border-radius: 6px; width: 100%; cursor: pointer; font-weight: bold; font-size: 0.85rem; transition: 0.3s; }
         .btn-cancel:hover { color: var(--text-main); border-color: var(--text-main); box-shadow: inset 0 0 8px rgba(255, 255, 255, 0.1); }
+
+        /* Order History Styles */
+        .order-card { background: var(--bg-input); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; margin-bottom: 12px; }
+        .order-header { display: flex; justify-content: space-between; border-bottom: 1px dashed var(--border-color); padding-bottom: 8px; margin-bottom: 8px; font-size: 0.85rem; }
+        .order-status { background: rgba(255, 204, 0, 0.2); color: var(--neon-yellow); padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; border: 1px solid var(--neon-yellow); }
+        .order-estimasi { background: rgba(59, 130, 246, 0.2); color: #60a5fa; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; margin-top: 8px; display: inline-block; border: 1px solid #3b82f6;}
     </style>
 </head>
 <body>
@@ -156,6 +165,10 @@
         
         <div class="user-nav">
             <span class="user-tag" id="userDisplay">👤 Guest</span>
+            <!-- Tombol Pesanan Saya Ditambahkan -->
+            <button class="cart-btn" id="openOrdersBtn">
+                📦 Pesanan Saya
+            </button>
             <button class="cart-btn" id="openCartBtn">
                 🛒 <span class="cart-badge" id="cartCount">0</span>
             </button>
@@ -181,6 +194,7 @@
         <div class="product-grid" id="productGrid"></div>
     </div>
 
+    <!-- Modal Produk -->
     <div class="modal hidden" id="productModal">
         <div class="modal-card">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
@@ -215,6 +229,7 @@
         </div>
     </div>
 
+    <!-- Modal Keranjang -->
     <div class="modal hidden" id="cartModal">
         <div class="modal-card">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
@@ -253,6 +268,19 @@
         </div>
     </div>
 
+    <!-- Modal Riwayat Pesanan (BARU) -->
+    <div class="modal hidden" id="orderModal">
+        <div class="modal-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
+                <h3 style="font-size: 1.1rem; color: var(--neon-yellow);">Pesanan Saya</h3>
+                <button class="btn-close" id="closeOrderBtn">✕</button>
+            </div>
+            <div id="orderItemsList" style="max-height: 60vh; overflow-y: auto;">
+                <!-- List Pesanan Akan Muncul Disini -->
+            </div>
+        </div>
+    </div>
+
     <script>
         function playAddToCartSound() {
             try {
@@ -288,7 +316,6 @@
             { id: 6, nama: "Headphone Bluetooth NC", kategori: "Audio", harga: 1450000, stok: 25, gambar: "https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?w=500&auto=format&fit=crop", video: "https://youtu.be/MIYwPwIwfqU?si=fH8oFbQVF0J3158p" }
         ];
 
-        // MENGGUNAKAN tp_stok AGAR SAMA DENGAN ADMIN
         let dataStok = JSON.parse(localStorage.getItem('tp_stok'));
         if (!dataStok || dataStok.length === 0) {
             dataStok = defaultElektronik;
@@ -312,6 +339,7 @@
         const productGrid = document.getElementById('productGrid');
         const cartModal = document.getElementById('cartModal');
         const productModal = document.getElementById('productModal');
+        const orderModal = document.getElementById('orderModal'); // Baru
 
         function renderProducts(filter = 'ALL') {
             dataStok = JSON.parse(localStorage.getItem('tp_stok')) || [];
@@ -481,6 +509,46 @@
         document.getElementById('openCartBtn').addEventListener('click', () => cartModal.classList.remove('hidden'));
         document.getElementById('closeCartBtn').addEventListener('click', () => cartModal.classList.add('hidden'));
 
+        // --- SISTEM BUKA MODAL PESANAN SAYA ---
+        document.getElementById('openOrdersBtn').addEventListener('click', () => {
+            renderOrderHistory();
+            orderModal.classList.remove('hidden');
+        });
+        document.getElementById('closeOrderBtn').addEventListener('click', () => orderModal.classList.add('hidden'));
+
+        function renderOrderHistory() {
+            const orderListContainer = document.getElementById('orderItemsList');
+            let dataPesananDb = JSON.parse(localStorage.getItem('tp_pesanan')) || [];
+            
+            // Filter pesanan berdasarkan nama yang diketikkan pengguna di perangkat ini
+            const userName = document.getElementById('custName').value || activeUser;
+            const myOrders = dataPesananDb.filter(p => p.nama.toLowerCase() === userName.toLowerCase());
+
+            if (myOrders.length === 0) {
+                orderListContainer.innerHTML = '<div style="text-align:center; color: var(--text-muted); font-size:0.85rem; padding: 20px;">Anda belum memiliki riwayat pesanan.</div>';
+                return;
+            }
+
+            // Tampilkan dari pesanan terbaru (reverse)
+            orderListContainer.innerHTML = myOrders.slice().reverse().map(order => `
+                <div class="order-card">
+                    <div class="order-header">
+                        <span><b style="color: var(--text-main);">#${order.id}</b> • ${order.tanggal}</span>
+                        <span class="order-status">${order.status || 'Sedang Diproses'}</span>
+                    </div>
+                    <div style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.4;">
+                        ${order.items}
+                    </div>
+                    <div style="margin-top: 8px; font-weight: bold; color: var(--neon-yellow);">
+                        Total: Rp ${order.total.toLocaleString('id-ID')}
+                    </div>
+                    <div class="order-estimasi">
+                        🕒 Estimasi Sampai: <b>${order.estimasi || 'Menunggu Info Kurir'}</b>
+                    </div>
+                </div>
+            `).join('');
+        }
+
         // --- SISTEM CHECKOUT DAN SINKRONISASI KE ADMIN ---
         document.getElementById('btnCheckout').addEventListener('click', () => {
             const name = document.getElementById('custName').value;
@@ -514,9 +582,17 @@
                 totalBelanja += (cartItem.harga * cartItem.qty);
                 daftarItemBeli.push(`${cartItem.nama} (${cartItem.qty}x)`);
             });
-            localStorage.setItem('tp_stok', JSON.stringify(dataStokDb)); // Simpan stok baru
+            localStorage.setItem('tp_stok', JSON.stringify(dataStokDb)); 
 
-            // 2. KIRIM KE PESANAN MASUK ADMIN
+            // ==========================================
+            // LOGIKA ESTIMASI PENGIRIMAN (BARU Ditambahkan)
+            // ==========================================
+            const today = new Date();
+            const estimasiHari = Math.floor(Math.random() * 3) + 2; // Acak antara 2 sampai 4 hari
+            today.setDate(today.getDate() + estimasiHari);
+            const estimasiTanggal = today.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            
+            // 2. KIRIM KE PESANAN MASUK ADMIN (Dengan Data Estimasi)
             const idTransaksi = Math.floor(1000 + Math.random() * 9000);
             const pesananBaru = {
                 id: idTransaksi,
@@ -524,13 +600,15 @@
                 nama: name,
                 items: daftarItemBeli.join(', '),
                 total: totalBelanja,
-                metode: method
+                metode: method,
+                estimasi: estimasiTanggal,    // <-- Data estimasi masuk ke DB pesanan
+                status: "Sedang Diproses"     // <-- Status default awal
             };
             dataPesananDb.push(pesananBaru);
             localStorage.setItem('tp_pesanan', JSON.stringify(dataPesananDb));
 
             // 3. TAMBAH KE LAPORAN KEUANGAN ADMIN
-            const dateStr = new Date().toLocaleDateString('en-GB'); // DD/MM/YYYY
+            const dateStr = new Date().toLocaleDateString('en-GB'); 
             dataKeuanganDb.push({
                 id: Date.now(),
                 tanggal: dateStr,
@@ -546,12 +624,11 @@
             if(dataLogsDb.length > 20) dataLogsDb.pop();
             localStorage.setItem('tp_logs', JSON.stringify(dataLogsDb));
 
-            // Selesai Transaksi
-            alert(`Pesanan via ${method} berhasil dibuat! Terima kasih ${name}, pesanan Anda sedang diproses.`);
+            // Selesai Transaksi & Beri Notifikasi Estimasi
+            alert(`Pesanan berhasil dibuat!\n\nEstimasi barang sampai: ${estimasiTanggal}\n\nSilahkan cek menu "Pesanan Saya" untuk melihat status pengiriman.`);
             
             cart = [];
             updateCartUI();
-            document.getElementById('custAddress').value = '';
             cartModal.classList.add('hidden');
             
             renderProducts(); // Refresh tampilan stok
