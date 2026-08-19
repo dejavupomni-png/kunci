@@ -108,6 +108,11 @@
             color: var(--text-main); outline: none; font-size: 0.95rem;
             transition: 0.2s;
         }
+        /* Style khusus file input */
+        .form-group input[type="file"] {
+            padding: 8px;
+            cursor: pointer;
+        }
         .form-group input:focus, .form-group select:focus {
             border-color: var(--accent);
             box-shadow: 0 0 8px var(--accent-glow);
@@ -216,6 +221,7 @@
                 <span style="font-size: 0.75rem; color: #000; background: var(--accent); padding: 4px 10px; border-radius: 20px; font-weight: bold; box-shadow: 0 0 10px var(--accent-glow);">⚡ Admin Mode</span>
             </header>
 
+            <!-- Bagian Dashboard & Laporan tetap sama... -->
             <section id="dashboard-section" class="content-section">
                 <div class="card-box">
                     <h3>⚡ Panel Dashboard Sistem</h3>
@@ -410,6 +416,7 @@
                 </div>
             </section>
 
+            <!-- BAGIAN INPUT BARU: DIUBAH KE UPLOAD FILE -->
             <section id="input-section" class="content-section hidden">
                 <div class="card-box">
                     <h3>⚡ Tambah Produk Baru</h3>
@@ -446,9 +453,13 @@
                                 <label>Harga Jual (Rp)</label>
                                 <input type="number" id="hargaBarang" placeholder="0">
                             </div>
+                            
+                            <!-- UBAHAN DISINI: Input file gambar dan preview -->
                             <div class="form-group">
-                                <label>URL Gambar (Opsional)</label>
-                                <input type="text" id="gambarBarang" placeholder="https://...">
+                                <label>Gambar Produk (Pilih dari Galeri)</label>
+                                <input type="file" id="gambarBarang" accept="image/*">
+                                <input type="hidden" id="gambarBase64" value="">
+                                <img id="previewGambar" src="" style="max-width: 120px; margin-top: 10px; display: none; border-radius: 6px; border: 1px solid var(--border); box-shadow: 0 2px 5px rgba(0,0,0,0.3);">
                             </div>
                         </div>
                         <button type="button" id="btnSimpanBarang" class="btn" style="margin-top: 16px;">⚡ Simpan ke Database</button>
@@ -491,7 +502,7 @@
                                     <th>Produk Dipesan</th>
                                     <th>Total Bayar</th>
                                     <th>Metode</th>
-                                    <th>Aksi</th> <!-- Kolom Aksi Baru -->
+                                    <th>Aksi</th> 
                                 </tr>
                             </thead>
                             <tbody id="tabelPesanan"></tbody>
@@ -654,19 +665,58 @@
             document.getElementById('totalNilaiAset').textContent = `Rp ${totalNilai.toLocaleString('id-ID')}`;
         }
 
+        // --- UBAHAN DISINI: PROSES UPLOAD & KOMPRESI GAMBAR ---
+        document.getElementById('gambarBarang').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    // Membuat Canvas untuk mengkompresi gambar agar tidak membuat localStorage penuh
+                    const canvas = document.createElement('canvas');
+                    const MAX_WIDTH = 300; // Resolusi di perkecil menjadi max 300px lebar
+                    const scaleSize = MAX_WIDTH / img.width;
+                    
+                    canvas.width = MAX_WIDTH;
+                    canvas.height = img.height * scaleSize;
+
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+                    // Konversi ke Base64 (Format teks) dengan kualitas 70%
+                    const dataUrl = canvas.toDataURL('image/jpeg', 0.7); 
+                    
+                    // Simpan ke input hidden
+                    document.getElementById('gambarBase64').value = dataUrl;
+                    
+                    // Tampilkan di preview
+                    const preview = document.getElementById('previewGambar');
+                    preview.src = dataUrl;
+                    preview.style.display = 'block';
+                }
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+
         // --- MANAJEMEN STOK ---
         document.getElementById('btnSimpanBarang').addEventListener('click', () => {
             const kode = document.getElementById('kodeBarang').value;
             const nama = document.getElementById('namaBarang').value;
             const stok = document.getElementById('stokBarang').value;
             const harga = document.getElementById('hargaBarang').value;
-            let gambar = document.getElementById('gambarBarang').value;
+            
+            // Mengambil base64 hasil kompresi (bukan URL teks lagi)
+            let gambar = document.getElementById('gambarBase64').value;
 
             if (!kode || !nama || !stok || !harga) {
                 alert('⚡ Peringatan: Mohon lengkapi semua form wajib!');
                 return;
             }
 
+            // Fallback jika tidak pilih foto
             if (!gambar) gambar = 'https://via.placeholder.com/150/111827/facc15?text=⚡+Tech';
 
             const item = {
@@ -676,21 +726,31 @@
                 kategori: document.getElementById('kategoriBarang').value,
                 stok: parseInt(stok) || 0,
                 harga: parseInt(harga) || 0,
-                gambar: gambar
+                gambar: gambar // Sekarang menyimpan data base64
             };
 
-            dataStok.push(item);
-            localStorage.setItem('tp_stok', JSON.stringify(dataStok));
-            addLog(`⚡ Input Baru: ${nama} (${stok} unit) ditambahkan.`);
-            renderStok();
-            
-            document.getElementById('kodeBarang').value = '';
-            document.getElementById('namaBarang').value = '';
-            document.getElementById('stokBarang').value = '';
-            document.getElementById('hargaBarang').value = '';
-            document.getElementById('gambarBarang').value = '';
-            
-            alert('⚡ Berhasil! Produk telah ditambahkan ke database.');
+            // Proteksi tambahan untuk mencegah error kuota localStorage
+            try {
+                dataStok.push(item);
+                localStorage.setItem('tp_stok', JSON.stringify(dataStok));
+                addLog(`⚡ Input Baru: ${nama} (${stok} unit) ditambahkan.`);
+                renderStok();
+                
+                // Reset Form
+                document.getElementById('kodeBarang').value = '';
+                document.getElementById('namaBarang').value = '';
+                document.getElementById('stokBarang').value = '';
+                document.getElementById('hargaBarang').value = '';
+                document.getElementById('gambarBarang').value = ''; // Reset input file
+                document.getElementById('gambarBase64').value = ''; // Reset hidden input
+                document.getElementById('previewGambar').style.display = 'none'; // Sembunyikan preview
+                document.getElementById('previewGambar').src = '';
+                
+                alert('⚡ Berhasil! Produk telah ditambahkan ke database.');
+            } catch (e) {
+                dataStok.pop(); // Batalkan penambahan jika memori penuh
+                alert('⚠️ ERROR: Memori sistem (Local Storage) penuh! Hapus beberapa data atau gunakan gambar beresolusi lebih kecil.');
+            }
         });
 
         function restokProduk(index) {
@@ -723,7 +783,7 @@
 
             tbody.innerHTML = dataStok.map((item, index) => `
                 <tr>
-                    <td><img src="${item.gambar}" width="45" height="45" style="object-fit:cover; border-radius:6px; border: 1px solid var(--border);"></td>
+                    <td><img src="${item.gambar}" width="45" height="45" style="object-fit:cover; border-radius:6px; border: 1px solid var(--border); background: var(--bg-card);"></td>
                     <td style="color: var(--cyan); font-family: monospace;">${item.kode}</td>
                     <td style="font-weight: 500;">${item.nama}</td>
                     <td><span style="font-size: 0.8rem; background: var(--bg-main); padding: 4px 8px; border-radius: 4px;">${item.kategori}</span></td>
@@ -855,7 +915,6 @@
                 items: `${produkDibeli.nama} (${jumlahBeli}x)`,
                 total: totalBayar,
                 metode: 'Transfer Bank',
-                // Data khusus untuk pembatalan order di masa depan:
                 detail: { kode: produkDibeli.kode, nama: produkDibeli.nama, qty: jumlahBeli }
             };
             
@@ -898,15 +957,12 @@
 
             const order = dataPesanan[orderIndex];
 
-            // 1. Kembalikan Stok
             if (order.detail) {
-                // Untuk data baru yang punya "detail"
                 const stockIndex = dataStok.findIndex(s => s.kode === order.detail.kode);
                 if (stockIndex !== -1) {
                     dataStok[stockIndex].stok += order.detail.qty;
                 }
             } else {
-                // Untuk memproses legacy data (pesanan lama) jika ada
                 const match = order.items.match(/(.+?)\s*\((\d+)x\)$/);
                 if (match) {
                     const namaProd = match[1];
@@ -917,18 +973,15 @@
             }
             localStorage.setItem('tp_stok', JSON.stringify(dataStok));
 
-            // 2. Hapus Catatan dari Laporan Keuangan
             const financeIndex = dataKeuangan.findIndex(k => k.keterangan.includes(`(#${orderId})`));
             if (financeIndex !== -1) {
                 dataKeuangan.splice(financeIndex, 1);
                 localStorage.setItem('tp_keuangan', JSON.stringify(dataKeuangan));
             }
 
-            // 3. Hapus Order dari tabel pesanan
             dataPesanan.splice(orderIndex, 1);
             localStorage.setItem('tp_pesanan', JSON.stringify(dataPesanan));
 
-            // 4. Catat ke log & render ulang
             addLog(`❌ Batal: Pesanan #${orderId} dibatalkan. Stok direstore.`);
             
             renderPesanan();
@@ -946,7 +999,6 @@
                 return;
             }
 
-            // Dibalik agar pesanan terbaru ada di atas
             tbody.innerHTML = [...dataPesanan].reverse().map(p => `
                 <tr>
                     <td style="color: var(--accent); font-family: monospace;"><b>#${p.id}</b></td>
@@ -955,7 +1007,7 @@
                     <td style="font-size: 0.85rem;">${p.items}</td>
                     <td style="color:var(--success); font-weight: bold;">Rp ${p.total.toLocaleString('id-ID')}</td>
                     <td><span style="font-size: 0.75rem; border: 1px solid var(--border); padding: 4px 8px; border-radius: 4px;">${p.metode}</span></td>
-                    <td><button onclick="batalkanPesanan(${p.id})" class="btn-del">Batal</button></td> <!-- Tombol Batal Ditambahkan -->
+                    <td><button onclick="batalkanPesanan(${p.id})" class="btn-del">Batal</button></td> 
                 </tr>
             `).join('');
         }
