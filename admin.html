@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
@@ -19,6 +19,7 @@
             --danger: #ef4444;
             --success: #10b981;
             --warning: #f59e0b;
+            --purple: #8b5cf6;
             --cyan: #06b6d4;
         }
 
@@ -26,10 +27,17 @@
         body { background-color: var(--bg-main); color: var(--text-main); min-height: 100vh; }
         .hidden { display: none !important; }
 
+        /* Animasi Aksen Petir */
         @keyframes thunderGlow {
             0% { text-shadow: 0 0 5px var(--accent-glow); }
             50% { text-shadow: 0 0 20px var(--accent), 0 0 30px var(--accent); }
             100% { text-shadow: 0 0 5px var(--accent-glow); }
+        }
+        
+        @keyframes flashSuccess {
+            0% { box-shadow: inset 0 0 0px var(--success); }
+            50% { box-shadow: inset 0 0 20px var(--success); }
+            100% { box-shadow: inset 0 0 0px var(--success); }
         }
 
         #dashboard-page { display: flex; min-height: 100vh; }
@@ -140,7 +148,11 @@
             display: flex; flex-direction: column; align-items: center; 
             justify-content: center; gap: 8px; transition: 0.2s;
         }
-        .quick-action-card:hover { border-color: var(--accent); transform: translateY(-3px); box-shadow: 0 4px 12px var(--accent-glow); }
+        .quick-action-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px var(--accent-glow);
+        }
 
         .dashboard-grid-2col { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
 
@@ -166,6 +178,16 @@
 </head>
 <body>
 
+    <!-- Baris ini dinonaktifkan sementara agar Anda bisa menguji file HTML ini langsung di komputer Anda -->
+    <!-- 
+    <script>
+        if (localStorage.getItem('tp_admin_session') !== 'true') {
+            alert('⚡ Akses Ditolak! Anda harus login sebagai Admin terlebih dahulu.');
+            window.location.href = 'index.html';
+        }
+    </script>
+    -->
+
     <div id="dashboard-page">
         <aside id="sidebar">
             <div>
@@ -176,6 +198,9 @@
                     <li><a href="#input-section" class="nav-link">⚡ Input Barang</a></li>
                     <li><a href="#stok-section" class="nav-link">📦 Kelola Stok</a></li>
                     <li><a href="#pesanan-section" class="nav-link">🛒 Pesanan Masuk</a></li>
+                    
+                    <!-- Tombol Simulasi Pembelian Web -->
+                    <li style="margin-top: 20px;"><a href="#" id="btnSimulasiWeb" class="nav-link" style="color: var(--success); font-weight: bold; border-left: 3px solid var(--success); background: rgba(16, 185, 129, 0.1);">🛒 Simulasi Web Beli</a></li>
                 </ul>
             </div>
             <div>
@@ -194,6 +219,9 @@
             <section id="dashboard-section" class="content-section">
                 <div class="card-box">
                     <h3>⚡ Panel Dashboard Sistem</h3>
+                    <p style="color: var(--text-muted); margin-bottom: 20px; font-size: 0.9rem;">
+                        Pantau pergerakan toko, kelola inventaris, dan optimalkan pendapatan Anda secara *real-time*.
+                    </p>
                     
                     <div class="stats-grid-2col" style="margin-bottom: 20px;">
                         <div style="background: var(--bg-main); padding: 16px; border-radius: 8px; border-left: 4px solid var(--accent); box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
@@ -228,7 +256,7 @@
 
                     <div class="dashboard-grid-2col" style="margin-bottom: 24px;">
                         <div style="background: var(--bg-main); padding: 16px; border-radius: 8px; border: 1px solid var(--border);">
-                            <h4 style="font-size: 0.9rem; color: var(--warning); margin-bottom: 12px;">⚠️ Peringatan Stok Menipis</h4>
+                            <h4 style="font-size: 0.9rem; color: var(--warning); margin-bottom: 12px; display: flex; gap: 6px;"><span style="animation: thunderGlow 1.5s infinite;">⚠️</span> Peringatan Stok Menipis</h4>
                             <div class="table-container">
                                 <table>
                                     <thead>
@@ -308,6 +336,10 @@
                             <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">💎 Total Nilai Aset Gudang</span>
                             <div id="totalNilaiAset" style="font-weight: 900; color: var(--success); font-size: 1.3rem; margin-top: 6px;">Rp 0</div>
                         </div>
+                    </div>
+
+                    <div class="dashboard-footer">
+                        ⚡ Tech Admin Control Panel v2.0 • Sistem Aktif & Terhubung
                     </div>
 
                 </div>
@@ -394,12 +426,15 @@
                             <div class="form-group">
                                 <label>Kategori</label>
                                 <select id="kategoriBarang">
-                                    <optgroup label="Elektronik">
-                                        <option value="TV">TV</option>
+                                    <optgroup label="Aksesoris & Peripherals">
+                                        <option value="Aksesoris Keyboard">Aksesoris Keyboard</option>
+                                        <option value="Aksesoris Mouse">Aksesoris Mouse</option>
                                         <option value="Audio">Audio</option>
-                                        <option value="Kamera">Kamera</option>
-                                        <option value="Gaming">Gaming</option>
-                                        <option value="Peralatan">Peralatan Rumah</option>
+                                    </optgroup>
+                                    <optgroup label="Sparepart / Hardware">
+                                        <option value="GPU">GPU</option>
+                                        <option value="CPU">CPU</option>
+                                        <option value="RAM">RAM</option>
                                     </optgroup>
                                 </select>
                             </div>
@@ -456,6 +491,7 @@
                                     <th>Produk Dipesan</th>
                                     <th>Total Bayar</th>
                                     <th>Metode</th>
+                                    <th>Aksi</th> <!-- Kolom Aksi Baru -->
                                 </tr>
                             </thead>
                             <tbody id="tabelPesanan"></tbody>
@@ -467,7 +503,7 @@
     </div>
 
     <script>
-        // KUNCI HARUS 'tp_stok' AGAR SAMA DENGAN INDEX.HTML
+        // Memuat data dari Local Storage
         let dataStok = JSON.parse(localStorage.getItem('tp_stok')) || [];
         let dataPesanan = JSON.parse(localStorage.getItem('tp_pesanan')) || [];
         let dataKeuangan = JSON.parse(localStorage.getItem('tp_keuangan')) || [];
@@ -484,6 +520,7 @@
             'pesanan-section': '🛒 Daftar Pesanan Masuk'
         };
 
+        // --- FUNGSI LOG AKTIVITAS ---
         function addLog(activity) {
             const time = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
             dataLogs.unshift({ time, activity });
@@ -499,8 +536,11 @@
             }
         }
 
+        // --- NAVIGASI MENU ---
         document.querySelectorAll('.nav-link').forEach(link => {
             link.addEventListener('click', (e) => {
+                if(link.id === 'btnSimulasiWeb') return;
+
                 e.preventDefault();
                 const targetId = link.getAttribute('href').replace('#', '');
                 
@@ -522,9 +562,10 @@
 
         document.getElementById('btnLogout').addEventListener('click', () => {
             localStorage.removeItem('tp_admin_session');
-            window.location.href = 'index.html'; 
+            window.location.href = 'index.html';
         });
 
+        // --- FUNGSI UPDATE DASHBOARD ---
         function updateDashboardElements() {
             document.getElementById('dashTotalBarang').textContent = dataStok.length;
             document.getElementById('dashTotalPesanan').textContent = dataPesanan.length;
@@ -613,6 +654,7 @@
             document.getElementById('totalNilaiAset').textContent = `Rp ${totalNilai.toLocaleString('id-ID')}`;
         }
 
+        // --- MANAJEMEN STOK ---
         document.getElementById('btnSimpanBarang').addEventListener('click', () => {
             const kode = document.getElementById('kodeBarang').value;
             const nama = document.getElementById('namaBarang').value;
@@ -634,8 +676,7 @@
                 kategori: document.getElementById('kategoriBarang').value,
                 stok: parseInt(stok) || 0,
                 harga: parseInt(harga) || 0,
-                gambar: gambar,
-                video: ""
+                gambar: gambar
             };
 
             dataStok.push(item);
@@ -683,7 +724,7 @@
             tbody.innerHTML = dataStok.map((item, index) => `
                 <tr>
                     <td><img src="${item.gambar}" width="45" height="45" style="object-fit:cover; border-radius:6px; border: 1px solid var(--border);"></td>
-                    <td style="color: var(--cyan); font-family: monospace;">${item.kode || '-'}</td>
+                    <td style="color: var(--cyan); font-family: monospace;">${item.kode}</td>
                     <td style="font-weight: 500;">${item.nama}</td>
                     <td><span style="font-size: 0.8rem; background: var(--bg-main); padding: 4px 8px; border-radius: 4px;">${item.kategori}</span></td>
                     <td style="font-weight: bold; color: ${item.stok <= 5 ? 'var(--danger)' : 'var(--text-main)'};">${item.stok}</td>
@@ -706,6 +747,7 @@
             }
         }
 
+        // --- MANAJEMEN KEUANGAN ---
         document.getElementById('btnSimpanKeuangan').addEventListener('click', () => {
             const tglVal = document.getElementById('lapTanggal').value;
             const pendapatan = parseInt(document.getElementById('lapPendapatan').value) || 0;
@@ -783,13 +825,128 @@
             }
         });
 
-        function renderPesanan() {
-            const tbody = document.getElementById('tabelPesanan');
-            if (dataPesanan.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color: var(--text-muted); font-style: italic;">Tidak ada antrean pesanan di sistem.</td></tr>';
+        // --- MANAJEMEN PESANAN (DAN PEMBATALAN) ---
+
+        // FITUR BARU: SIMULASI PEMBELIAN WEB (DIPERBARUI)
+        document.getElementById('btnSimulasiWeb').addEventListener('click', (e) => {
+            e.preventDefault();
+            
+            if(dataStok.length === 0) {
+                alert('⚡ Gagal! Tidak ada produk di database. Silakan Input Barang terlebih dahulu agar user bisa membeli.');
                 return;
             }
 
+            const randomItemIndex = Math.floor(Math.random() * dataStok.length);
+            const produkDibeli = dataStok[randomItemIndex];
+
+            if(produkDibeli.stok <= 0) {
+                alert(`⚡ Simulasi gagal! Stok "${produkDibeli.nama}" habis. Silakan restok dulu.`);
+                return;
+            }
+
+            const jumlahBeli = 1; 
+            const totalBayar = produkDibeli.harga * jumlahBeli;
+            const namaPembeli = "Guest_" + Math.floor(Math.random() * 999);
+
+            const pesananBaru = {
+                id: Math.floor(1000 + Math.random() * 9000),
+                tanggal: new Date().toLocaleDateString('id-ID') + ' ' + new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
+                nama: namaPembeli,
+                items: `${produkDibeli.nama} (${jumlahBeli}x)`,
+                total: totalBayar,
+                metode: 'Transfer Bank',
+                // Data khusus untuk pembatalan order di masa depan:
+                detail: { kode: produkDibeli.kode, nama: produkDibeli.nama, qty: jumlahBeli }
+            };
+            
+            dataPesanan.push(pesananBaru);
+            localStorage.setItem('tp_pesanan', JSON.stringify(dataPesanan));
+
+            dataStok[randomItemIndex].stok -= jumlahBeli;
+            localStorage.setItem('tp_stok', JSON.stringify(dataStok));
+
+            const dateStr = new Date().toLocaleDateString('en-GB');
+            dataKeuangan.push({
+                id: Date.now(),
+                tanggal: dateStr,
+                pendapatan: totalBayar,
+                pengeluaran: 0,
+                keterangan: `Penjualan Web (#${pesananBaru.id})`
+            });
+            localStorage.setItem('tp_keuangan', JSON.stringify(dataKeuangan));
+
+            addLog(`🛒 PESANAN BARU: ${namaPembeli} membeli ${produkDibeli.nama}.`);
+            
+            renderPesanan();
+            renderStok();
+            renderKeuangan();
+            updateDashboardElements();
+
+            const header = document.getElementById('main-header');
+            header.style.animation = 'flashSuccess 1s ease-out';
+            setTimeout(() => header.style.animation = '', 1000);
+
+            alert(`✅ SIMULASI BERHASIL!\n\nPembeli: ${namaPembeli}\nMembeli: ${produkDibeli.nama}\nStok otomatis dikurangi & Keuangan ditambahkan.`);
+        });
+
+        // FITUR BARU: BATALKAN PESANAN
+        function batalkanPesanan(orderId) {
+            if (!confirm(`⚡ Yakin ingin membatalkan pesanan #${orderId}? Stok akan dikembalikan dan catatan pendapatan akan dihapus.`)) return;
+
+            const orderIndex = dataPesanan.findIndex(p => p.id === orderId);
+            if (orderIndex === -1) return;
+
+            const order = dataPesanan[orderIndex];
+
+            // 1. Kembalikan Stok
+            if (order.detail) {
+                // Untuk data baru yang punya "detail"
+                const stockIndex = dataStok.findIndex(s => s.kode === order.detail.kode);
+                if (stockIndex !== -1) {
+                    dataStok[stockIndex].stok += order.detail.qty;
+                }
+            } else {
+                // Untuk memproses legacy data (pesanan lama) jika ada
+                const match = order.items.match(/(.+?)\s*\((\d+)x\)$/);
+                if (match) {
+                    const namaProd = match[1];
+                    const qty = parseInt(match[2]);
+                    const stockIndex = dataStok.findIndex(s => s.nama === namaProd);
+                    if (stockIndex !== -1) dataStok[stockIndex].stok += qty;
+                }
+            }
+            localStorage.setItem('tp_stok', JSON.stringify(dataStok));
+
+            // 2. Hapus Catatan dari Laporan Keuangan
+            const financeIndex = dataKeuangan.findIndex(k => k.keterangan.includes(`(#${orderId})`));
+            if (financeIndex !== -1) {
+                dataKeuangan.splice(financeIndex, 1);
+                localStorage.setItem('tp_keuangan', JSON.stringify(dataKeuangan));
+            }
+
+            // 3. Hapus Order dari tabel pesanan
+            dataPesanan.splice(orderIndex, 1);
+            localStorage.setItem('tp_pesanan', JSON.stringify(dataPesanan));
+
+            // 4. Catat ke log & render ulang
+            addLog(`❌ Batal: Pesanan #${orderId} dibatalkan. Stok direstore.`);
+            
+            renderPesanan();
+            renderStok();
+            renderKeuangan();
+            updateDashboardElements();
+
+            alert(`⚡ Pesanan #${orderId} berhasil dibatalkan. Stok telah dikembalikan.`);
+        }
+
+        function renderPesanan() {
+            const tbody = document.getElementById('tabelPesanan');
+            if (dataPesanan.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color: var(--text-muted); font-style: italic;">Tidak ada antrean pesanan di sistem.</td></tr>';
+                return;
+            }
+
+            // Dibalik agar pesanan terbaru ada di atas
             tbody.innerHTML = [...dataPesanan].reverse().map(p => `
                 <tr>
                     <td style="color: var(--accent); font-family: monospace;"><b>#${p.id}</b></td>
@@ -798,10 +955,12 @@
                     <td style="font-size: 0.85rem;">${p.items}</td>
                     <td style="color:var(--success); font-weight: bold;">Rp ${p.total.toLocaleString('id-ID')}</td>
                     <td><span style="font-size: 0.75rem; border: 1px solid var(--border); padding: 4px 8px; border-radius: 4px;">${p.metode}</span></td>
+                    <td><button onclick="batalkanPesanan(${p.id})" class="btn-del">Batal</button></td> <!-- Tombol Batal Ditambahkan -->
                 </tr>
             `).join('');
         }
 
+        // Inisialisasi Pertama
         if(dataLogs.length === 0) addLog('⚡ Sistem Admin Induk berhasil menyala.');
         renderStok();
         renderPesanan();
